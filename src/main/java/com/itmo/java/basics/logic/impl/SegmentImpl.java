@@ -8,6 +8,7 @@ import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.logic.io.DatabaseInputStream;
 import com.itmo.java.basics.logic.io.DatabaseOutputStream;
 
+import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,8 +25,6 @@ public class SegmentImpl implements Segment {
     private int size = 0;
     private boolean isReadOnly = false;
     private final SegmentIndex segmentIndex = new SegmentIndex();
-    private DatabaseInputStream dbis = null;
-    private DatabaseOutputStream dbos = null;
 
 
     public SegmentImpl(String segmentName, Path tableRootPath) {
@@ -58,15 +57,11 @@ public class SegmentImpl implements Segment {
     @Override
     public boolean write(String objectKey, byte[] objectValue) throws IOException {
         if (objectKey == null || objectValue == null) return false;
-        try {
-            SetDatabaseRecord stbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
-            dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true));
+        SetDatabaseRecord stbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
+
+        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true)))  {
             segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
             size += dbos.write(stbr);
-        }
-        finally {
-            assert dbos != null;
-            dbos.close();
         }
 
         if (size >= 100000) isReadOnly = true;
@@ -78,16 +73,11 @@ public class SegmentImpl implements Segment {
         if (objectKey == null || segmentIndex.searchForKey(objectKey).isEmpty()) return Optional.empty();
         Optional<byte[]> keyBytes;
 
-        try {
-            dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName)))));
+        try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName)))))) {
             dbis.skip(Objects.requireNonNull(segmentIndex.searchForKey(objectKey).orElse(null)).getOffset());
             var result = dbis.readDbUnit();
             if (result.isEmpty()) return Optional.empty();
             else keyBytes = Optional.of(result.get().getValue());
-        }
-        finally {
-            assert dbis != null;
-            dbis.close();
         }
 
         return keyBytes;
@@ -103,18 +93,9 @@ public class SegmentImpl implements Segment {
         if (objectKey == null || segmentIndex.searchForKey(objectKey).isEmpty()) return false;
         RemoveDatabaseRecord rdbr = new RemoveDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8));
 
-        try {
-            dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true));
-//            System.out.println(segmentIndex.searchForKey(objectKey).get().getOffset());
+        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true))) {
             segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
-//            System.out.println(segmentIndex.searchForKey(objectKey).get().getOffset());
-            System.out.println(size);
             size += dbos.write(rdbr);
-            System.out.println(size);
-        }
-        finally {
-            assert dbos != null;
-            dbos.close();
         }
 
         if (size >= 100000) isReadOnly = true;

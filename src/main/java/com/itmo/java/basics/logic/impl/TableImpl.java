@@ -41,12 +41,16 @@ public class TableImpl implements Table {
     }
 
     @Override
-    public void write(String objectKey, byte[] objectValue) throws DatabaseException, IOException {
+    public void write(String objectKey, byte[] objectValue) throws DatabaseException {
         if (currentSegment == null || currentSegment.isReadOnly()) {
             currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
             tableIndex.onIndexedEntityUpdated(objectKey, currentSegment);
         }
-        currentSegment.write(objectKey, objectValue);
+        try {
+            currentSegment.write(objectKey, objectValue);
+        } catch (IOException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
