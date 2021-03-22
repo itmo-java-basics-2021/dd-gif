@@ -46,9 +46,10 @@ public class DatabaseImpl implements Database {
 
     @Override
     public void write(String tableName, String objectKey, byte[] objectValue) throws DatabaseException {
-        if(databaseIndex.searchForKey(tableName).isPresent()) {
-            databaseIndex.searchForKey(tableName).get().write(objectKey, objectValue);
+        if (databaseIndex.searchForKey(tableName).isPresent()) {
+            throw new DatabaseException("no such table");
         }
+        databaseIndex.searchForKey(tableName).get().write(objectKey, objectValue);
     }
 
     @Override
