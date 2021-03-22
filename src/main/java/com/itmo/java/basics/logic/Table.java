@@ -29,7 +29,7 @@ public interface Table {
      * @param objectValue значение, которое нужно записать
      * @throws DatabaseException если произошла ошибка ввода-вывода
      */
-    void write(String objectKey, byte[] objectValue) throws DatabaseException, IOException;
+    void write(String objectKey, byte[] objectValue) throws DatabaseException;
 
     /**
      * Считывает значение из таблицы по заданному ключу.
