@@ -2,11 +2,13 @@ package com.itmo.java.basics.logic.impl;
 
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.logic.Database;
+import com.itmo.java.basics.logic.Segment;
 
 import java.nio.file.Path;
 import java.util.Optional;
 
 public class DatabaseImpl implements Database {
+
     public static Database create(String dbName, Path databaseRoot) throws DatabaseException {
         return null;
     }

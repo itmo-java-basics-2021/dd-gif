@@ -2,6 +2,7 @@ package com.itmo.java.basics.logic;
 
 import com.itmo.java.basics.exceptions.DatabaseException;
 
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -28,7 +29,7 @@ public interface Table {
      * @param objectValue значение, которое нужно записать
      * @throws DatabaseException если произошла ошибка ввода-вывода
      */
-    void write(String objectKey, byte[] objectValue) throws DatabaseException;
+    void write(String objectKey, byte[] objectValue) throws DatabaseException, IOException;
 
     /**
      * Считывает значение из таблицы по заданному ключу.

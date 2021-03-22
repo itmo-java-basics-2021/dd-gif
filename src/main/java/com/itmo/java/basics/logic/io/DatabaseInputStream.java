@@ -2,10 +2,14 @@ package com.itmo.java.basics.logic.io;
 
 import com.itmo.java.basics.logic.DatabaseRecord;
 import com.itmo.java.basics.logic.WritableDatabaseRecord;
+import com.itmo.java.basics.logic.impl.SetDatabaseRecord;
 
+import javax.xml.crypto.Data;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -23,6 +27,14 @@ public class DatabaseInputStream extends DataInputStream {
      * @return следующую запись, если она существует. {@link Optional#empty()} - если конец файла достигнут
      */
     public Optional<DatabaseRecord> readDbUnit() throws IOException {
-        return null;
+        int keySize = readInt();
+        byte[] key = in.readNBytes(keySize);
+        int valueSize = readInt();
+        if (valueSize == REMOVED_OBJECT_SIZE) {
+            return Optional.empty();
+        }
+        byte[] value = in.readNBytes(valueSize);
+
+        return Optional.of(new SetDatabaseRecord(key, value));
     }
 }
