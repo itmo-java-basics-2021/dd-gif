@@ -24,7 +24,6 @@ public class TableImpl implements Table {
     }
 
     static Table create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
-
         Table table = new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex);
 
         try {
@@ -46,6 +45,7 @@ public class TableImpl implements Table {
             currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
             tableIndex.onIndexedEntityUpdated(objectKey, currentSegment);
         }
+
         try {
             currentSegment.write(objectKey, objectValue);
         } catch (IOException e) {
@@ -56,6 +56,7 @@ public class TableImpl implements Table {
     @Override
     public Optional<byte[]> read(String objectKey) throws DatabaseException {
         if (tableIndex.searchForKey(objectKey).isEmpty()) return Optional.empty();
+
         try {
             return tableIndex.searchForKey(objectKey).get().read(objectKey);
         } catch (IOException e) {

@@ -58,7 +58,6 @@ public class SegmentImpl implements Segment {
     public boolean write(String objectKey, byte[] objectValue) throws IOException {
         if (objectKey == null || objectValue == null) return false;
         SetDatabaseRecord stbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
-
         try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true)))  {
             segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
             size += dbos.write(stbr);
