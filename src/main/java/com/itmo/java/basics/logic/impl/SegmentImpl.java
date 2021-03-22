@@ -33,8 +33,7 @@ public class SegmentImpl implements Segment {
         this.tableRootPath = tableRootPath;
     }
 
-    // TODO delete public
-    public static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
+    static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
         Segment segment = new SegmentImpl(segmentName, tableRootPath);
 
         try {
@@ -47,8 +46,7 @@ public class SegmentImpl implements Segment {
         return segment;
     }
 
-    // TODO delete public
-    public static String createSegmentName(String tableName) {
+    static String createSegmentName(String tableName) {
         return tableName + "_" + System.currentTimeMillis();
     }
 
@@ -59,9 +57,9 @@ public class SegmentImpl implements Segment {
 
     @Override
     public boolean write(String objectKey, byte[] objectValue) throws IOException {
-        SetDatabaseRecord stbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
-
+        if (objectKey == null || objectValue == null) return false;
         try {
+            SetDatabaseRecord stbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
             dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true));
             segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
             size += dbos.write(stbr);
