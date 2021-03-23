@@ -57,15 +57,11 @@ public class SegmentImpl implements Segment {
 
     @Override
     public boolean write(String objectKey, byte[] objectValue) throws IOException {
-        if (objectKey == null || objectValue == null || isReadOnly()) return false;
+        if (objectKey == null || objectValue == null || isReadOnly()) {
+            return false;
+        }
         SetDatabaseRecord stbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
 
-//        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true)))  {
-//            segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
-//            size += dbos.write(stbr);
-//        }
-//
-//        if (size >= 100000) isReadOnly = true;
         return this.appendToFile(objectKey, stbr);
     }
 
@@ -94,15 +90,11 @@ public class SegmentImpl implements Segment {
 
     @Override
     public boolean delete(String objectKey) throws IOException {
-        if (objectKey == null || segmentIndex.searchForKey(objectKey).isEmpty()) return false;
+        if (objectKey == null || segmentIndex.searchForKey(objectKey).isEmpty()) {
+            return false;
+        }
         RemoveDatabaseRecord rdbr = new RemoveDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8));
 
-//        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true))) {
-//            segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
-//            size += dbos.write(rdbr);
-//        }
-//
-//        if (size >= 100000) isReadOnly = true;
         return this.appendToFile(objectKey, rdbr);
     }
 
