@@ -55,7 +55,7 @@ public class DatabaseImpl implements Database {
 
     @Override
     public Optional<byte[]> read(String tableName, String objectKey) throws DatabaseException {
-        if (databaseIndex.searchForKey(tableName).isEmpty() || objectKey == null) return Optional.empty();
+        if (objectKey == null || databaseIndex.searchForKey(tableName).isEmpty()) return Optional.empty();
         else {
             return databaseIndex.searchForKey(tableName).get().read(objectKey);
         }
