@@ -47,7 +47,7 @@ public class DatabaseImpl implements Database {
 
     @Override
     public void write(String tableName, String objectKey, byte[] objectValue) throws DatabaseException {
-        if (databaseIndex.searchForKey(tableName).isPresent()) {
+        if (databaseIndex.searchForKey(tableName).isEmpty()) {
             throw new DatabaseException("no such table");
         }
         databaseIndex.searchForKey(tableName).get().write(objectKey, objectValue);
@@ -55,7 +55,9 @@ public class DatabaseImpl implements Database {
 
     @Override
     public Optional<byte[]> read(String tableName, String objectKey) throws DatabaseException {
-        if (objectKey == null || databaseIndex.searchForKey(tableName).isEmpty()) return Optional.empty();
+        if (objectKey == null || databaseIndex.searchForKey(tableName).isEmpty()) {
+            return Optional.empty();
+        }
         else {
             return databaseIndex.searchForKey(tableName).get().read(objectKey);
         }
@@ -63,7 +65,10 @@ public class DatabaseImpl implements Database {
 
     @Override
     public void delete(String tableName, String objectKey) throws DatabaseException {
-        if (databaseIndex.searchForKey(tableName).isPresent()) {
+        if (databaseIndex.searchForKey(tableName).isEmpty()) {
+            throw new DatabaseException("no such table");
+        }
+        else {
             databaseIndex.searchForKey(tableName).get().delete(objectKey);
         }
     }
