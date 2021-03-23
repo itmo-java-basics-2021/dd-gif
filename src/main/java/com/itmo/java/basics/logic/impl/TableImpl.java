@@ -43,11 +43,11 @@ public class TableImpl implements Table {
     public void write(String objectKey, byte[] objectValue) throws DatabaseException {
         if (currentSegment == null || currentSegment.isReadOnly()) {
             currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
-            tableIndex.onIndexedEntityUpdated(objectKey, currentSegment);
         }
 
         try {
             currentSegment.write(objectKey, objectValue);
+            tableIndex.onIndexedEntityUpdated(objectKey, currentSegment);
         } catch (IOException e) {
             throw new DatabaseException(e);
         }

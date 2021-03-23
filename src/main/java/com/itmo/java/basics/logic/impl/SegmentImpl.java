@@ -77,11 +77,14 @@ public class SegmentImpl implements Segment {
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName)))))) {
             dbis.skip(Objects.requireNonNull(segmentIndex.searchForKey(objectKey).orElse(null)).getOffset());
             var result = dbis.readDbUnit();
-            if (result.isEmpty()) return Optional.empty();
-            else keyBytes = Optional.of(result.get().getValue());
+            if (result.get().isValuePresented()) {
+                return Optional.of(result.get().getValue());
+            }
+            else {
+                return Optional.empty();
+            }
         }
 
-        return keyBytes;
     }
 
     @Override
