@@ -2,14 +2,12 @@ package com.itmo.java.basics.logic.impl;
 
 import com.itmo.java.basics.index.impl.SegmentIndex;
 import com.itmo.java.basics.index.impl.SegmentOffsetInfoImpl;
-import com.itmo.java.basics.logic.DatabaseRecord;
 import com.itmo.java.basics.logic.Segment;
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.logic.WritableDatabaseRecord;
 import com.itmo.java.basics.logic.io.DatabaseInputStream;
 import com.itmo.java.basics.logic.io.DatabaseOutputStream;
 
-import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -67,8 +65,9 @@ public class SegmentImpl implements Segment {
 
     @Override
     public Optional<byte[]> read(String objectKey) throws IOException {
-        if (objectKey == null || segmentIndex.searchForKey(objectKey).isEmpty()) return Optional.empty();
-        Optional<byte[]> keyBytes;
+        if (objectKey == null || segmentIndex.searchForKey(objectKey).isEmpty()) {
+            return Optional.empty();
+        }
 
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName)))))) {
             dbis.skip(Objects.requireNonNull(segmentIndex.searchForKey(objectKey).orElse(null)).getOffset());
@@ -104,7 +103,9 @@ public class SegmentImpl implements Segment {
             size += dbos.write(databaseRecord);
         }
 
-        if (size >= 100000) isReadOnly = true;
+        if (size >= 100000) {
+            isReadOnly = true;
+        }
         return true;
     }
 }

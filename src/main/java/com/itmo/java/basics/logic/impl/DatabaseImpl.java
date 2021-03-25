@@ -40,7 +40,7 @@ public class DatabaseImpl implements Database {
     @Override
     public void createTableIfNotExists(String tableName) throws DatabaseException {
         if(databaseIndex.searchForKey(tableName).isPresent()) {
-            throw new DatabaseException("such table already exists");
+            throw new DatabaseException(String.format("The table %s already exists", tableName));
         }
         databaseIndex.onIndexedEntityUpdated(tableName, TableImpl.create(tableName, path, new TableIndex()));
     }
@@ -48,7 +48,7 @@ public class DatabaseImpl implements Database {
     @Override
     public void write(String tableName, String objectKey, byte[] objectValue) throws DatabaseException {
         if (databaseIndex.searchForKey(tableName).isEmpty()) {
-            throw new DatabaseException("no such table");
+            throw new DatabaseException(String.format("There is no table %s", tableName));
         }
         databaseIndex.searchForKey(tableName).get().write(objectKey, objectValue);
     }
@@ -66,7 +66,7 @@ public class DatabaseImpl implements Database {
     @Override
     public void delete(String tableName, String objectKey) throws DatabaseException {
         if (databaseIndex.searchForKey(tableName).isEmpty()) {
-            throw new DatabaseException("no such table");
+            throw new DatabaseException(String.format("There is no table %s", tableName));
         }
         else {
             databaseIndex.searchForKey(tableName).get().delete(objectKey);

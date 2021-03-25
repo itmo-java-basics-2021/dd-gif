@@ -8,7 +8,6 @@ import com.itmo.java.basics.logic.Table;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 public class TableImpl implements Table {
@@ -29,7 +28,7 @@ public class TableImpl implements Table {
         try {
             Files.createDirectory(pathToDatabaseRoot.resolve(tableName));
         } catch (IOException e) {
-            throw new DatabaseException(e);
+            throw new DatabaseException(String.format("IO exception when trying to create table %s in path %s", tableName, pathToDatabaseRoot.toString()), e);
         }
         return table;
     }
@@ -49,18 +48,20 @@ public class TableImpl implements Table {
             currentSegment.write(objectKey, objectValue);
             tableIndex.onIndexedEntityUpdated(objectKey, currentSegment);
         } catch (IOException e) {
-            throw new DatabaseException(e);
+            throw new DatabaseException(String.format("IO exception when trying to write pair key-value %s-%s", objectKey, new String(objectValue)), e);
         }
     }
 
     @Override
     public Optional<byte[]> read(String objectKey) throws DatabaseException {
-        if (tableIndex.searchForKey(objectKey).isEmpty()) return Optional.empty();
+        if (tableIndex.searchForKey(objectKey).isEmpty()) {
+            return Optional.empty();
+        }
 
         try {
             return tableIndex.searchForKey(objectKey).get().read(objectKey);
         } catch (IOException e) {
-            throw new DatabaseException(e);
+            throw new DatabaseException(String.format("IO exception when trying to read a value with key %s", objectKey), e);
         }
     }
 
@@ -70,7 +71,7 @@ public class TableImpl implements Table {
             try {
                 tableIndex.searchForKey(objectKey).get().delete(objectKey);
             } catch (IOException e) {
-                throw new DatabaseException(e);
+                throw new DatabaseException(String.format("IO exception when trying to delete a value with key %s", objectKey), e);
             }
         }
     }

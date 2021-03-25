@@ -28,9 +28,9 @@ public class DatabaseInputStream extends DataInputStream {
      * @return следующую запись, если она существует. {@link Optional#empty()} - если конец файла достигнут
      */
     public Optional<DatabaseRecord> readDbUnit() throws IOException {
-        if (this.available() == 0)
+        if (this.available() == 0) {
             return Optional.empty();
-
+        }
         int keySize = readInt();
         byte[] key = in.readNBytes(keySize);
         int valueSize = readInt();
