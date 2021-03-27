@@ -34,7 +34,6 @@ public class SegmentImpl implements Segment {
 
     static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
         Segment segment = new SegmentImpl(segmentName, tableRootPath);
-
         try {
             Files.createFile(tableRootPath.resolve(Paths.get(segment.getName())));
         }
@@ -57,7 +56,6 @@ public class SegmentImpl implements Segment {
     @Override
     public boolean write(String objectKey, byte[] objectValue) throws IOException {
         SetDatabaseRecord stbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
-
         return this.appendToFile(objectKey, stbr);
     }
 
