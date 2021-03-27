@@ -2,13 +2,15 @@ package com.itmo.java.basics.logic.impl;
 
 import com.itmo.java.basics.logic.WritableDatabaseRecord;
 
+import java.util.Objects;
+
 public class SetDatabaseRecord implements WritableDatabaseRecord {
     private final byte[] key;
     private final byte[] value;
 
     public SetDatabaseRecord(byte[] key, byte[] value) {
         this.key = key;
-        this.value = value;
+        this.value = Objects.requireNonNull(value, "The value is null");
     }
 
     @Override
@@ -28,7 +30,7 @@ public class SetDatabaseRecord implements WritableDatabaseRecord {
 
     @Override
     public boolean isValuePresented() {
-        return value != null;
+        return true;
     }
 
     @Override

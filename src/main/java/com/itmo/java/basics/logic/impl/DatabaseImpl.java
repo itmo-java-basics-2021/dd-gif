@@ -39,7 +39,7 @@ public class DatabaseImpl implements Database {
 
     @Override
     public void createTableIfNotExists(String tableName) throws DatabaseException {
-        if(databaseIndex.searchForKey(tableName).isPresent()) {
+        if (databaseIndex.searchForKey(tableName).isPresent()) {
             throw new DatabaseException(String.format("The table %s already exists", tableName));
         }
         databaseIndex.onIndexedEntityUpdated(tableName, TableImpl.create(tableName, path, new TableIndex()));

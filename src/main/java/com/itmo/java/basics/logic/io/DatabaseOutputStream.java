@@ -33,9 +33,9 @@ public class DatabaseOutputStream extends DataOutputStream {
      * @throws IOException если запись не удалась
      */
     public long write(WritableDatabaseRecord databaseRecord) throws IOException {
-        out.write(ByteBuffer.allocate(4).putInt(databaseRecord.getKeySize()).array());
+        writeInt(databaseRecord.getKeySize());
         out.write(databaseRecord.getKey());
-        out.write(ByteBuffer.allocate(4).putInt(databaseRecord.getValueSize()).array());
+        writeInt(databaseRecord.getValueSize());
         out.write(databaseRecord.getValue());
         return databaseRecord.size();
     }
