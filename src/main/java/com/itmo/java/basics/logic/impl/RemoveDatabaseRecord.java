@@ -4,7 +4,7 @@ import com.itmo.java.basics.logic.WritableDatabaseRecord;
 
 public class RemoveDatabaseRecord implements WritableDatabaseRecord {
     private final byte[] key;
-    private final byte[] value = null;
+    private final byte[] value = new byte[] {};
 
     public RemoveDatabaseRecord(byte[] key) {
         this.key = key;
@@ -17,7 +17,7 @@ public class RemoveDatabaseRecord implements WritableDatabaseRecord {
 
     @Override
     public byte[] getValue() {
-        return null;
+        return value;
     }
 
     @Override
