@@ -38,7 +38,9 @@ public class DatabaseInputStream extends DataInputStream {
             return Optional.of(new RemoveDatabaseRecord(key));
         }
         byte[] value = in.readNBytes(valueSize);
-
+        if (value == null) {
+            return Optional.empty();
+        }
         return Optional.of(new SetDatabaseRecord(key, value));
     }
 }
