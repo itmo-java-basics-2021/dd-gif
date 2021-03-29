@@ -55,6 +55,9 @@ public class SegmentImpl implements Segment {
 
     @Override
     public boolean write(String objectKey, byte[] objectValue) throws IOException {
+        if (isReadOnly()) {
+            return false;
+        }
         if (objectValue == null) {
             return delete(objectKey);
         }
