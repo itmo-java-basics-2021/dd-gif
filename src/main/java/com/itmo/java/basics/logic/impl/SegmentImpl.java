@@ -24,6 +24,7 @@ public class SegmentImpl implements Segment {
     private int size = 0;
     private boolean isReadOnly = false;
     private final SegmentIndex segmentIndex = new SegmentIndex();
+    private static final int MAX_SEGMENT_SIZE = 100000;
 
 
     public SegmentImpl(String segmentName, Path tableRootPath) {
@@ -54,8 +55,11 @@ public class SegmentImpl implements Segment {
 
     @Override
     public boolean write(String objectKey, byte[] objectValue) throws IOException {
-        SetDatabaseRecord stbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
-        return this.appendToFile(objectKey, stbr);
+        if (objectKey == null || objectValue == null) {
+            return false;
+        }
+        SetDatabaseRecord sdbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
+        return this.appendToFile(objectKey, sdbr);
     }
 
     @Override
@@ -70,7 +74,6 @@ public class SegmentImpl implements Segment {
             if (result.isPresent() && result.get().isValuePresented()) {
                 if (!Arrays.equals(objectKey.getBytes(StandardCharsets.UTF_8), result.get().getKey())) {
                     throw new IOException("The file is probably damaged");
-//                    return Optional.empty();
                 }
                 return Optional.of(result.get().getValue());
             }
@@ -102,7 +105,7 @@ public class SegmentImpl implements Segment {
             size += dbos.write(databaseRecord);
         }
 
-        if (size >= 100000) {
+        if (size >= MAX_SEGMENT_SIZE) {
             isReadOnly = true;
         }
         return true;
