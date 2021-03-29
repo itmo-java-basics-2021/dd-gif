@@ -67,9 +67,18 @@ public class TableImpl implements Table {
 
     @Override
     public void delete(String objectKey) throws DatabaseException {
-        if (tableIndex.searchForKey(objectKey).isPresent()) {
+        var tmp = tableIndex.searchForKey(objectKey);
+        if (tmp.isPresent()) {
             try {
-                tableIndex.searchForKey(objectKey).get().delete(objectKey);
+                if (tmp.get().isReadOnly()) {
+                    if (currentSegment.isReadOnly()) {
+                        tableIndex.onIndexedEntityUpdated(objectKey, SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path));
+                    }
+                    else {
+                        tableIndex.onIndexedEntityUpdated(objectKey, currentSegment);
+                    }
+                }
+                tmp.get().delete(objectKey);
             } catch (IOException e) {
                 throw new DatabaseException(String.format("IO exception when trying to delete a value with key %s", objectKey), e);
             }
