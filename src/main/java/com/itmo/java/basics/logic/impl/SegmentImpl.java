@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Optional;
 
 public class SegmentImpl implements Segment {
@@ -61,16 +60,17 @@ public class SegmentImpl implements Segment {
 
     @Override
     public Optional<byte[]> read(String objectKey) throws IOException {
-        if (objectKey == null || segmentIndex.searchForKey(objectKey).isEmpty()) {
+        if (segmentIndex.searchForKey(objectKey).isEmpty()) {
             return Optional.empty();
         }
 
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName)))))) {
             dbis.skip(segmentIndex.searchForKey(objectKey).orElseThrow(() -> new IllegalArgumentException("The key wasn't found")).getOffset());
             var result = dbis.readDbUnit();
-            if (result.get().isValuePresented()) {
+            if (result.isPresent() && result.get().isValuePresented()) {
                 if (!Arrays.equals(objectKey.getBytes(StandardCharsets.UTF_8), result.get().getKey())) {
                     throw new IOException("The file is probably damaged");
+//                    return Optional.empty();
                 }
                 return Optional.of(result.get().getValue());
             }
