@@ -20,14 +20,14 @@ public class TableImpl implements Table {
         this.tableName = tableName;
         this.path = pathToDatabaseRoot;
         this.tableIndex = tableIndex;
-        this.currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
     }
 
     static Table create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
-        Table table = new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex);
+        TableImpl table = new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex);
 
         try {
             Files.createDirectory(pathToDatabaseRoot.resolve(tableName));
+            table.currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.path);
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to create table %s in path %s", tableName, pathToDatabaseRoot.toString()), e);
         }
