@@ -5,12 +5,9 @@ import com.itmo.java.basics.logic.WritableDatabaseRecord;
 import com.itmo.java.basics.logic.impl.RemoveDatabaseRecord;
 import com.itmo.java.basics.logic.impl.SetDatabaseRecord;
 
-import javax.xml.crypto.Data;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -25,6 +22,7 @@ public class DatabaseInputStream extends DataInputStream {
 
     /**
      * Читает следующую запись (см {@link DatabaseOutputStream#write(WritableDatabaseRecord)})
+     *
      * @return следующую запись, если она существует. {@link Optional#empty()} - если конец файла достигнут
      */
     public Optional<DatabaseRecord> readDbUnit() throws IOException {

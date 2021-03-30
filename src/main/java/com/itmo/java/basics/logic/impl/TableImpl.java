@@ -14,12 +14,13 @@ public class TableImpl implements Table {
     private final String tableName;
     private final Path path;
     private final TableIndex tableIndex;
-    private Segment currentSegment = null;
+    private Segment currentSegment;
 
-    private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) {
+    private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
         this.tableName = tableName;
         this.path = pathToDatabaseRoot;
         this.tableIndex = tableIndex;
+        this.currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
     }
 
     static Table create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
@@ -40,12 +41,11 @@ public class TableImpl implements Table {
 
     @Override
     public void write(String objectKey, byte[] objectValue) throws DatabaseException {
-        if (currentSegment == null || currentSegment.isReadOnly()) {
-            currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
-        }
-
         try {
-            currentSegment.write(objectKey, objectValue);
+            if (!currentSegment.write(objectKey, objectValue)) {
+                currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
+                currentSegment.write(objectKey, objectValue);
+            }
             tableIndex.onIndexedEntityUpdated(objectKey, currentSegment);
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to write pair key-value %s-%s", objectKey, new String(objectValue)), e);
@@ -73,8 +73,7 @@ public class TableImpl implements Table {
                 if (tmp.get().isReadOnly()) {
                     if (currentSegment.isReadOnly()) {
                         tableIndex.onIndexedEntityUpdated(objectKey, SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path));
-                    }
-                    else {
+                    } else {
                         tableIndex.onIndexedEntityUpdated(objectKey, currentSegment);
                     }
                 }

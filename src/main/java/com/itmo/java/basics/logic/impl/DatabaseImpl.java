@@ -26,7 +26,7 @@ public class DatabaseImpl implements Database {
         try {
             Files.createDirectory(databaseRoot.resolve(dbName));
         } catch (IOException e) {
-            throw new DatabaseException(e);
+            throw new DatabaseException(String.format("IO exception when trying to create database %s", dbName), e);
         }
 
         return db;
@@ -50,6 +50,9 @@ public class DatabaseImpl implements Database {
         if (databaseIndex.searchForKey(tableName).isEmpty()) {
             throw new DatabaseException(String.format("There is no table %s", tableName));
         }
+        if (objectKey == null) {
+            throw new DatabaseException("The key mustn't be null value");
+        }
         databaseIndex.searchForKey(tableName).get().write(objectKey, objectValue);
     }
 
@@ -57,8 +60,7 @@ public class DatabaseImpl implements Database {
     public Optional<byte[]> read(String tableName, String objectKey) throws DatabaseException {
         if (objectKey == null || databaseIndex.searchForKey(tableName).isEmpty()) {
             return Optional.empty();
-        }
-        else {
+        } else {
             return databaseIndex.searchForKey(tableName).get().read(objectKey);
         }
     }
@@ -68,8 +70,9 @@ public class DatabaseImpl implements Database {
         if (databaseIndex.searchForKey(tableName).isEmpty()) {
             throw new DatabaseException(String.format("There is no table %s", tableName));
         }
-        else {
-            databaseIndex.searchForKey(tableName).get().delete(objectKey);
+        if (objectKey == null) {
+            throw new DatabaseException("The key mustn't be null value");
         }
+        databaseIndex.searchForKey(tableName).get().delete(objectKey);
     }
 }

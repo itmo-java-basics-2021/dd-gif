@@ -36,8 +36,7 @@ public class SegmentImpl implements Segment {
         Segment segment = new SegmentImpl(segmentName, tableRootPath);
         try {
             Files.createFile(tableRootPath.resolve(Paths.get(segment.getName())));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new DatabaseException(e);
         }
 
@@ -79,8 +78,7 @@ public class SegmentImpl implements Segment {
                     throw new IOException("The file is probably damaged");
                 }
                 return Optional.of(result.get().getValue());
-            }
-            else {
+            } else {
                 return Optional.empty();
             }
         }
@@ -102,8 +100,8 @@ public class SegmentImpl implements Segment {
         return this.appendToFile(objectKey, rdbr);
     }
 
-    private boolean appendToFile(String objectKey, WritableDatabaseRecord databaseRecord) throws IOException{
-        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true)))  {
+    private boolean appendToFile(String objectKey, WritableDatabaseRecord databaseRecord) throws IOException {
+        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true))) {
             segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
             size += dbos.write(databaseRecord);
         }
