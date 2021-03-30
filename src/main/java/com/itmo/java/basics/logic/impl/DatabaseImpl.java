@@ -50,6 +50,9 @@ public class DatabaseImpl implements Database {
         if (databaseIndex.searchForKey(tableName).isEmpty()) {
             throw new DatabaseException(String.format("There is no table %s", tableName));
         }
+        if (objectKey == null) {
+            throw new DatabaseException("The key mustn't be null value");
+        }
         databaseIndex.searchForKey(tableName).get().write(objectKey, objectValue);
     }
 
@@ -66,6 +69,9 @@ public class DatabaseImpl implements Database {
     public void delete(String tableName, String objectKey) throws DatabaseException {
         if (databaseIndex.searchForKey(tableName).isEmpty()) {
             throw new DatabaseException(String.format("There is no table %s", tableName));
+        }
+        if (objectKey == null) {
+            throw new DatabaseException("The key mustn't be null value");
         }
         databaseIndex.searchForKey(tableName).get().delete(objectKey);
     }

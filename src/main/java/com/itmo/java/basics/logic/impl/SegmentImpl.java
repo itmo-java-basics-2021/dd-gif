@@ -58,10 +58,12 @@ public class SegmentImpl implements Segment {
             return false;
         }
         if (objectValue == null) {
-            return delete(objectKey);
+            RemoveDatabaseRecord rdbr = new RemoveDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8));
+            return appendToFile(objectKey, rdbr);
+        } else {
+            SetDatabaseRecord sdbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
+            return this.appendToFile(objectKey, sdbr);
         }
-        SetDatabaseRecord sdbr = new SetDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8), objectValue);
-        return this.appendToFile(objectKey, sdbr);
     }
 
     @Override
@@ -97,7 +99,7 @@ public class SegmentImpl implements Segment {
         }
         RemoveDatabaseRecord rdbr = new RemoveDatabaseRecord(objectKey.getBytes(StandardCharsets.UTF_8));
 
-        return this.appendToFile(objectKey, rdbr);
+        return appendToFile(objectKey, rdbr);
     }
 
     private boolean appendToFile(String objectKey, WritableDatabaseRecord databaseRecord) throws IOException {
