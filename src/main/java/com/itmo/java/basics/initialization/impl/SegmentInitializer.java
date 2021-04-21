@@ -4,18 +4,15 @@ import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.index.impl.SegmentOffsetInfoImpl;
 import com.itmo.java.basics.initialization.InitializationContext;
 import com.itmo.java.basics.initialization.Initializer;
-import com.itmo.java.basics.logic.Segment;
-import com.itmo.java.basics.logic.impl.RemoveDatabaseRecord;
+import com.itmo.java.basics.logic.DatabaseRecord;
 import com.itmo.java.basics.logic.impl.SegmentImpl;
 import com.itmo.java.basics.logic.io.DatabaseInputStream;
 
-import java.awt.*;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -31,46 +28,80 @@ public class SegmentInitializer implements Initializer {
      */
     @Override
     public void perform(InitializationContext context) throws DatabaseException {
-        File segment = context.currentSegmentContext().getSegmentPath().toFile();
-        if (!segment.exists() || !segment.isFile() || !segment.canRead()) {
-            throw new DatabaseException(String.format("Something went wrong when trying to initialize segment %s",
-                    segment.getName()));
-        }
 
-        Path path = context.currentSegmentContext().getSegmentPath();
+        var segmentPath = context.currentSegmentContext().getSegmentPath();
 
-        try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(path)))) {
-            var result = dbis.readDbUnit();
-            ArrayList<String> keys = new ArrayList<>();
-            int size = 0;
+        if (Files.notExists(segmentPath))
+            throw new DatabaseException(
+                    "Segment " + segmentPath + " does not exist"
+            );
+        else if (Files.isDirectory(segmentPath))
+            throw new DatabaseException(
+                    segmentPath + "is not a segment file"
+            );
+        else if (!Files.isReadable(segmentPath))
+            throw new DatabaseException(
+                    "Segment " + segmentPath + " is not readable"
+            );
+        else {
+            try (DatabaseInputStream in = new DatabaseInputStream(
+                    new FileInputStream(
+                            String.valueOf(context.currentSegmentContext().getSegmentPath())
+                    )
+            )) {
 
-            while (result.isPresent()) {
-                context.currentSegmentContext().getIndex().onIndexedEntityUpdated(new String(result.get().getKey()),
-                        new SegmentOffsetInfoImpl(size));
-                size += result.get().size();
-                keys.add(new String(result.get().getKey()));
-                result = dbis.readDbUnit();
-            }
+                var offset = 0;
+                int size = 0;
+                List<String> segmentKeys = new ArrayList<>();
 
-            if (size > 0) {
-                context = new InitializationContextImpl(context.executionEnvironment(), context.currentDbContext(),
-                        context.currentTableContext(),
+                Optional<DatabaseRecord> segment;
+
+                while (in.available() > 0) {
+
+                    try {
+                        segment = in.readDbUnit();
+                    } catch (IOException e) {
+                        break;
+                    }
+
+                    size += segment.get().size();
+
+                    segmentKeys.add(
+                            new String(segment.get().getKey()));
+
+                    context.currentSegmentContext().getIndex().onIndexedEntityUpdated(
+                            new String(segment.get().getKey()),
+                            new SegmentOffsetInfoImpl(offset)
+                    );
+
+                    offset += segment.get().size();
+
+                }
+
+                context = new InitializationContextImpl(context.executionEnvironment(),
+                        context.currentDbContext(), context.currentTableContext(),
                         new SegmentInitializationContextImpl(
                                 context.currentSegmentContext().getSegmentName(),
                                 context.currentSegmentContext().getSegmentPath(),
                                 size,
                                 context.currentSegmentContext().getIndex()));
-            }
 
-            Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
-            for (var key : keys) {
-                context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key, initializedSegment);
-            }
-            context.currentTableContext().updateCurrentSegment(initializedSegment);
+                context.currentTableContext().updateCurrentSegment(
+                        SegmentImpl.initializeFromContext(
+                                context.currentSegmentContext()
+                        )
+                );
 
-        } catch (IOException e) {
-            throw new DatabaseException(String.format("IO exception when trying to initialize segment %s",
-                    context.currentSegmentContext().getSegmentName()), e);
+                InitializationContext finalContext = context;
+                segmentKeys.forEach(key ->
+                        finalContext.currentTableContext().getTableIndex().onIndexedEntityUpdated(
+                                key,
+                                finalContext.currentTableContext().getCurrentSegment()
+                        ));
+
+            } catch (IOException e) {
+                throw new DatabaseException(e);
+            }
         }
     }
 }
