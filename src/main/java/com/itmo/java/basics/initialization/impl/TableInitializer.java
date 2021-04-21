@@ -36,9 +36,6 @@ public class TableInitializer implements Initializer {
                     table.getName()));
         }
 
-        CachingTable initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
-        context.currentDbContext().addTable(initializedTable);
-
         Path path = context.currentTableContext().getTablePath();
         File workingDirectory = new File(path.toString());
         File[] segments = workingDirectory.listFiles();
@@ -58,5 +55,8 @@ public class TableInitializer implements Initializer {
                 segmentInitializer.perform(newContext);
             }
         }
+
+        CachingTable initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
+        context.currentDbContext().addTable(initializedTable);
     }
 }
