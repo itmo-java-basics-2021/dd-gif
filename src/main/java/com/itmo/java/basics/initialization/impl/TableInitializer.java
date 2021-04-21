@@ -38,8 +38,7 @@ public class TableInitializer implements Initializer {
                 var newContext = new InitializationContextImpl(context.executionEnvironment(),
                         context.currentDbContext(), context.currentTableContext(),
                         new SegmentInitializationContextImpl(segment.getName(),
-                                context.currentTableContext().getTablePath().resolve(
-                                        context.currentTableContext().getTableName()), 0));
+                                context.currentTableContext().getTablePath(), 0));
                 segmentInitializer.perform(newContext);
             }
         }

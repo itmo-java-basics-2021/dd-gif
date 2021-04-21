@@ -43,7 +43,7 @@ public class DatabaseServerInitializer implements Initializer {
             if (databases != null && databases.length > 0) {
                 for (var database : databases) {
                     var newContext = new InitializationContextImpl(context.executionEnvironment(),
-                            new DatabaseInitializationContextImpl(database.getName(), path.resolve(database.toString())),
+                            new DatabaseInitializationContextImpl(database.getName(), path),
                             context.currentTableContext(), context.currentSegmentContext());
                     databaseInitializer.perform(newContext);
                 }
