@@ -26,6 +26,7 @@ public class TableInitializer implements Initializer {
      * @throws DatabaseException если в контексте лежит неправильный путь к таблице, невозможно прочитать содержимого папки,
      *  или если возникла ошибка ошибка дочерних инициализаторов
      */
+
     @Override
     public void perform(InitializationContext context) throws DatabaseException {
         Path path = context.currentTableContext().getTablePath().resolve(context.currentTableContext().getTableName());

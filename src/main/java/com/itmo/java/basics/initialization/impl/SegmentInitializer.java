@@ -41,14 +41,15 @@ public class SegmentInitializer implements Initializer {
                 context.currentSegmentContext().setCurrentSize(result.get().size());
                 result = dbis.readDbUnit();
             }
+
+            Segment segment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
+            context.currentTableContext().getTableIndex().onIndexedEntityUpdated(
+                    context.currentSegmentContext().getSegmentName(), segment);
+            context.currentTableContext().updateCurrentSegment(segment);
+
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to initialize segment %s",
                     context.currentSegmentContext().getSegmentName()), e);
         }
-
-        Segment segment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
-        context.currentTableContext().getTableIndex().onIndexedEntityUpdated(
-                context.currentSegmentContext().getSegmentName(), segment);
-        context.currentTableContext().updateCurrentSegment(segment);
     }
 }

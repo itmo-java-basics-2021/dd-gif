@@ -29,6 +29,7 @@ public class DatabaseInitializer implements Initializer {
      * @throws DatabaseException если в контексте лежит неправильный путь к базе, невозможно прочитать содержимого папки,
      *  или если возникла ошибка дочерних инициализаторов
      */
+
     @Override
     public void perform(InitializationContext initialContext) throws DatabaseException {
         Path path = initialContext.currentDbContext().getDatabasePath();
