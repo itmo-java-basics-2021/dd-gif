@@ -37,7 +37,9 @@ public class TableImpl implements Table {
     }
 
     public static CachingTable initializeFromContext(TableInitializationContext context) {
-        return new CachingTable(new TableImpl(context.getTableName(), context.getTablePath(), context.getTableIndex()));
+        TableImpl table = new TableImpl(context.getTableName(), context.getTablePath(), context.getTableIndex());
+        table.currentSegment = context.getCurrentSegment();
+        return new CachingTable(table);
     }
 
     @Override
