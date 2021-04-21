@@ -1,5 +1,7 @@
 package com.itmo.java.basics.logic;
 
+import com.itmo.java.basics.index.impl.SegmentIndex;
+
 import java.io.IOException;
 import java.util.Optional;
 
@@ -45,4 +47,9 @@ public interface Segment {
     boolean isReadOnly();
 
     boolean delete(String objectKey) throws IOException;
+
+    // TODO
+    long getSize();
+
+    SegmentIndex getIndex();
 }

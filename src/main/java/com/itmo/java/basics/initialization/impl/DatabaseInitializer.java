@@ -3,9 +3,22 @@ package com.itmo.java.basics.initialization.impl;
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.initialization.InitializationContext;
 import com.itmo.java.basics.initialization.Initializer;
+import com.itmo.java.basics.logic.Database;
+import com.itmo.java.basics.logic.impl.CachingTable;
+import com.itmo.java.basics.logic.impl.DatabaseImpl;
+import com.itmo.java.basics.logic.impl.TableImpl;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 public class DatabaseInitializer implements Initializer {
+    private final TableInitializer tableInitializer;
+
     public DatabaseInitializer(TableInitializer tableInitializer) {
+        this.tableInitializer = tableInitializer;
     }
 
     /**
@@ -18,5 +31,22 @@ public class DatabaseInitializer implements Initializer {
      */
     @Override
     public void perform(InitializationContext initialContext) throws DatabaseException {
+        Path path = initialContext.currentDbContext().getDatabasePath();
+        File workingDirectory = new File(path.toString());
+        File[] tables = workingDirectory.listFiles();
+
+        if (tables != null && tables.length != 0) {
+            InitializationContextImpl newContext;
+            for (var table : tables) {
+                newContext = new InitializationContextImpl(initialContext.executionEnvironment(),
+                        initialContext.currentDbContext(),
+                        new TableInitializationContextImpl(table.getName(),
+                                initialContext.currentDbContext().getDatabasePath(), null),
+                        null);
+                tableInitializer.perform(newContext);
+            }
+        }
+        initialContext.executionEnvironment().addDatabase(
+                DatabaseImpl.initializeFromContext(initialContext.currentDbContext()));
     }
 }

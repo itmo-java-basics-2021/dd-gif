@@ -1,6 +1,7 @@
 package com.itmo.java.basics.logic;
 
 import com.itmo.java.basics.exceptions.DatabaseException;
+import com.itmo.java.basics.index.impl.TableIndex;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -41,5 +42,8 @@ public interface Table {
     Optional<byte[]> read(String objectKey) throws DatabaseException;
 
     void delete(String objectKey) throws DatabaseException;
+
+    // TODO
+    TableIndex getIndex();
 }
 

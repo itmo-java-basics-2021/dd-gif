@@ -3,21 +3,30 @@ package com.itmo.java.basics.logic.impl;
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.index.impl.DatabaseIndex;
 import com.itmo.java.basics.index.impl.TableIndex;
+import com.itmo.java.basics.initialization.DatabaseInitializationContext;
 import com.itmo.java.basics.logic.Database;
+import com.itmo.java.basics.logic.Table;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 import java.util.Optional;
 
 public class DatabaseImpl implements Database {
     private final String name;
     private final Path path;
-    private final DatabaseIndex databaseIndex = new DatabaseIndex();
+    private DatabaseIndex databaseIndex = new DatabaseIndex();
 
     private DatabaseImpl(String name, Path path) {
         this.name = name;
         this.path = path;
+    }
+
+    // TODO
+    @Override
+    public DatabaseIndex getDatabaseIndex() {
+        return databaseIndex;
     }
 
     public static Database create(String dbName, Path databaseRoot) throws DatabaseException {
@@ -32,6 +41,14 @@ public class DatabaseImpl implements Database {
         return db;
     }
 
+    public static Database initializeFromContext(DatabaseInitializationContext context) {
+        DatabaseImpl database = new DatabaseImpl(context.getDbName(), context.getDatabasePath());
+        for (Map.Entry<String, Table> entry : context.getTables().entrySet()) {
+            database.databaseIndex.onIndexedEntityUpdated(entry.getKey(), entry.getValue());
+        }
+        return database;
+    }
+
     @Override
     public String getName() {
         return name;
@@ -42,6 +59,7 @@ public class DatabaseImpl implements Database {
         if (databaseIndex.searchForKey(tableName).isPresent()) {
             throw new DatabaseException(String.format("The table %s already exists", tableName));
         }
+
         databaseIndex.onIndexedEntityUpdated(tableName, TableImpl.create(tableName, path, new TableIndex()));
     }
 
@@ -50,9 +68,11 @@ public class DatabaseImpl implements Database {
         if (databaseIndex.searchForKey(tableName).isEmpty()) {
             throw new DatabaseException(String.format("There is no table %s", tableName));
         }
+
         if (objectKey == null) {
             throw new DatabaseException("The key mustn't be null value");
         }
+
         databaseIndex.searchForKey(tableName).get().write(objectKey, objectValue);
     }
 
@@ -70,9 +90,11 @@ public class DatabaseImpl implements Database {
         if (databaseIndex.searchForKey(tableName).isEmpty()) {
             throw new DatabaseException(String.format("There is no table %s", tableName));
         }
+
         if (objectKey == null) {
             throw new DatabaseException("The key mustn't be null value");
         }
+
         databaseIndex.searchForKey(tableName).get().delete(objectKey);
     }
 }

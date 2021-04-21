@@ -2,6 +2,8 @@ package com.itmo.java.basics.logic.impl;
 
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.index.impl.TableIndex;
+import com.itmo.java.basics.initialization.TableInitializationContext;
+import com.itmo.java.basics.initialization.impl.TableInitializationContextImpl;
 import com.itmo.java.basics.logic.Segment;
 import com.itmo.java.basics.logic.Table;
 
@@ -16,22 +18,32 @@ public class TableImpl implements Table {
     private final TableIndex tableIndex;
     private Segment currentSegment;
 
+    // TODO
+    @Override
+    public TableIndex getIndex() {
+        return tableIndex;
+    }
+
     private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
         this.tableName = tableName;
         this.path = pathToDatabaseRoot;
         this.tableIndex = tableIndex;
     }
 
-    static Table create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
-        TableImpl table = new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex);
+    static CachingTable create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
+        CachingTable table = new CachingTable(new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex));
 
         try {
             Files.createDirectory(pathToDatabaseRoot.resolve(tableName));
-            table.currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.path);
+            table.getTable().currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.getTable().path);
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to create table %s in path %s", tableName, pathToDatabaseRoot.toString()), e);
         }
         return table;
+    }
+
+    public static CachingTable initializeFromContext(TableInitializationContext context) throws DatabaseException {
+        return new CachingTable(new TableImpl(context.getTableName(), context.getTablePath(), context.getTableIndex()));
     }
 
     @Override
@@ -68,6 +80,7 @@ public class TableImpl implements Table {
     @Override
     public void delete(String objectKey) throws DatabaseException {
         var tmp = tableIndex.searchForKey(objectKey);
+
         if (tmp.isPresent()) {
             try {
                 if (tmp.get().isReadOnly()) {

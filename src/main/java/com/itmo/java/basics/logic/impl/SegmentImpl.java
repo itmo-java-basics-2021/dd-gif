@@ -2,6 +2,7 @@ package com.itmo.java.basics.logic.impl;
 
 import com.itmo.java.basics.index.impl.SegmentIndex;
 import com.itmo.java.basics.index.impl.SegmentOffsetInfoImpl;
+import com.itmo.java.basics.initialization.SegmentInitializationContext;
 import com.itmo.java.basics.logic.Segment;
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.logic.WritableDatabaseRecord;
@@ -21,13 +22,23 @@ import java.util.Optional;
 public class SegmentImpl implements Segment {
     private final String segmentName;
     private final Path tableRootPath;
-    private int size = 0;
+    private long size = 0;
     private boolean isReadOnly = false;
-    private final SegmentIndex segmentIndex = new SegmentIndex();
+    private SegmentIndex segmentIndex = new SegmentIndex();
     private static final int MAX_SEGMENT_SIZE = 100000;
 
+    // TODO
+    @Override
+    public long getSize() {
+        return size;
+    }
 
-    public SegmentImpl(String segmentName, Path tableRootPath) {
+    @Override
+    public SegmentIndex getIndex() {
+        return segmentIndex;
+    }
+
+    private SegmentImpl(String segmentName, Path tableRootPath) {
         this.segmentName = segmentName;
         this.tableRootPath = tableRootPath;
     }
@@ -40,6 +51,13 @@ public class SegmentImpl implements Segment {
             throw new DatabaseException(e);
         }
 
+        return segment;
+    }
+
+    public static Segment initializeFromContext(SegmentInitializationContext context) {
+        SegmentImpl segment = new SegmentImpl(context.getSegmentName(), context.getSegmentPath());
+        segment.size = context.getCurrentSize();
+        segment.segmentIndex = context.getIndex();
         return segment;
     }
 
