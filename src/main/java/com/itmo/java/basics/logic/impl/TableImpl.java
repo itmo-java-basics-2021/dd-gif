@@ -24,7 +24,7 @@ public class TableImpl implements Table {
         this.tableIndex = tableIndex;
     }
 
-    static CachingTable create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
+    public static CachingTable create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
         CachingTable table = new CachingTable(new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex));
 
         try {
