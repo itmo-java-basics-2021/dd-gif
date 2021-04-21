@@ -39,6 +39,9 @@ public class DatabaseInitializer implements Initializer {
                     db.getName()));
         }
 
+        initialContext.executionEnvironment().addDatabase(
+                DatabaseImpl.initializeFromContext(initialContext.currentDbContext()));
+
         Path path = initialContext.currentDbContext().getDatabasePath();
         File workingDirectory = new File(path.toString());
         File[] tables = workingDirectory.listFiles();
@@ -53,8 +56,5 @@ public class DatabaseInitializer implements Initializer {
                 tableInitializer.perform(initialContext);
             }
         }
-
-        initialContext.executionEnvironment().addDatabase(
-                DatabaseImpl.initializeFromContext(initialContext.currentDbContext()));
     }
 }

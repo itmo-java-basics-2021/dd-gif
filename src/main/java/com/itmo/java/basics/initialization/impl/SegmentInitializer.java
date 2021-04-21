@@ -44,6 +44,8 @@ public class SegmentInitializer implements Initializer {
             ArrayList<String> keys = new ArrayList<>();
             int size = 0;
 
+            Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
+
             while (result.isPresent()) {
                 context.currentSegmentContext().getIndex().onIndexedEntityUpdated(new String(result.get().getKey()),
                         new SegmentOffsetInfoImpl(size));
@@ -62,7 +64,6 @@ public class SegmentInitializer implements Initializer {
                                 context.currentSegmentContext().getIndex()));
             }
 
-            Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
             for (var key : keys) {
                 context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key, initializedSegment);
             }

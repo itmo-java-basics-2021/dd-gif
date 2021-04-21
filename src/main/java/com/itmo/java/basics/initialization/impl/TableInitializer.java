@@ -36,6 +36,7 @@ public class TableInitializer implements Initializer {
                     table.getName()));
         }
 
+        Table initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
 
         Path path = context.currentTableContext().getTablePath();
         File workingDirectory = new File(path.toString());
@@ -52,7 +53,6 @@ public class TableInitializer implements Initializer {
             }
         }
 
-        Table initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
         context.currentDbContext().addTable(initializedTable);
     }
 }
