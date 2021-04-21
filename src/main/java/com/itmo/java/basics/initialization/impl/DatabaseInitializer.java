@@ -32,6 +32,11 @@ public class DatabaseInitializer implements Initializer {
 
     @Override
     public void perform(InitializationContext initialContext) throws DatabaseException {
+        File db = initialContext.currentDbContext().getDatabasePath().toFile();
+        if (!db.exists() || !db.isDirectory() || !db.canRead()) {
+            throw new DatabaseException(String.format("Something went wrong when trying to initialize db %s",
+                    db.getName()));
+        }
         Path path = initialContext.currentDbContext().getDatabasePath();
         File workingDirectory = new File(path.toString());
         File[] tables = workingDirectory.listFiles();
