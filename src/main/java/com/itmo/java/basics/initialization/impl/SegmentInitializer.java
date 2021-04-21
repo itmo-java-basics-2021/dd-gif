@@ -37,8 +37,6 @@ public class SegmentInitializer implements Initializer {
                     segment.getName()));
         }
 
-        Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
-
         Path path = context.currentSegmentContext().getSegmentPath();
 
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(path)))) {
@@ -64,12 +62,11 @@ public class SegmentInitializer implements Initializer {
                                 context.currentSegmentContext().getIndex()));
             }
 
+            Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
             for (var key : keys) {
                 context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key, initializedSegment);
             }
-            if (!initializedSegment.isReadOnly()) {
-                context.currentTableContext().updateCurrentSegment(initializedSegment);
-            }
+            context.currentTableContext().updateCurrentSegment(initializedSegment);
 
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to initialize segment %s",
