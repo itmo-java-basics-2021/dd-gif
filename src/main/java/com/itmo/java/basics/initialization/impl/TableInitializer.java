@@ -10,6 +10,7 @@ import com.itmo.java.basics.logic.impl.TableImpl;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 public class TableInitializer implements Initializer {
     private final SegmentInitializer segmentInitializer;
@@ -35,11 +36,15 @@ public class TableInitializer implements Initializer {
                     table.getName()));
         }
 
+        CachingTable initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
+        context.currentDbContext().addTable(initializedTable);
+
         Path path = context.currentTableContext().getTablePath();
         File workingDirectory = new File(path.toString());
         File[] segments = workingDirectory.listFiles();
 
         if (segments != null && segments.length != 0) {
+            Arrays.sort(segments);
             for (var segment : segments) {
                 if (!segment.exists() || !segment.isFile() || !segment.canRead()) {
                     throw new DatabaseException(String.format("Something went wrong when trying to initialize segment %s",
@@ -53,8 +58,5 @@ public class TableInitializer implements Initializer {
                 segmentInitializer.perform(newContext);
             }
         }
-
-        CachingTable initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
-        context.currentDbContext().addTable(initializedTable);
     }
 }

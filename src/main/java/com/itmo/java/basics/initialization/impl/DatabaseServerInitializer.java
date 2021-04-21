@@ -54,5 +54,7 @@ public class DatabaseServerInitializer implements Initializer {
                 }
             }
         }
+
+//        System.out.println(context);
     }
 }
