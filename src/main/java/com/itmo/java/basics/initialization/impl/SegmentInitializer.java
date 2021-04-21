@@ -9,10 +9,12 @@ import com.itmo.java.basics.logic.impl.RemoveDatabaseRecord;
 import com.itmo.java.basics.logic.impl.SegmentImpl;
 import com.itmo.java.basics.logic.io.DatabaseInputStream;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -40,17 +42,20 @@ public class SegmentInitializer implements Initializer {
 
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(path)))) {
             var result = dbis.readDbUnit();
+            ArrayList<String> keys = new ArrayList<>();
 
             while (result.isPresent()) {
                 context.currentSegmentContext().getIndex().onIndexedEntityUpdated(new String(result.get().getKey()),
                         new SegmentOffsetInfoImpl(context.currentSegmentContext().getCurrentSize()));
                 context.currentSegmentContext().setCurrentSize(result.get().size());
+                keys.add(new String(result.get().getKey()));
                 result = dbis.readDbUnit();
             }
 
             Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
-            context.currentTableContext().getTableIndex().onIndexedEntityUpdated(
-                    context.currentSegmentContext().getSegmentName(), initializedSegment);
+            for (var key : keys) {
+                context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key, initializedSegment);
+            }
             if (!initializedSegment.isReadOnly()) {
                 context.currentTableContext().updateCurrentSegment(initializedSegment);
             }
