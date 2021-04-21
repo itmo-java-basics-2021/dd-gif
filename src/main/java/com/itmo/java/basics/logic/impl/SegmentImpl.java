@@ -32,6 +32,14 @@ public class SegmentImpl implements Segment {
         this.tableRootPath = tableRootPath;
     }
 
+    private SegmentImpl(String segmentName, Path tableRootPath, long size, SegmentIndex index, boolean isReadOnly) {
+        this.segmentName = segmentName;
+        this.tableRootPath = tableRootPath;
+        this.size = size;
+        this.segmentIndex = index;
+        this.isReadOnly = isReadOnly;
+    }
+
     public static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
         Segment segment = new SegmentImpl(segmentName, tableRootPath);
         try {
@@ -44,11 +52,9 @@ public class SegmentImpl implements Segment {
     }
 
     public static Segment initializeFromContext(SegmentInitializationContext context) {
-        SegmentImpl segment = new SegmentImpl(context.getSegmentName(), context.getSegmentPath());
-        segment.size = context.getCurrentSize();
-        segment.segmentIndex = context.getIndex();
-        segment.isReadOnly = context.getCurrentSize() >= SegmentImpl.MAX_SEGMENT_SIZE;
-        return segment;
+        return new SegmentImpl(context.getSegmentName(), context.getSegmentPath(),
+                context.getCurrentSize(), context.getIndex(),
+                context.getCurrentSize() >= SegmentImpl.MAX_SEGMENT_SIZE);
     }
 
     static String createSegmentName(String tableName) {

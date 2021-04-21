@@ -24,6 +24,12 @@ public class DatabaseImpl implements Database {
         this.path = path;
     }
 
+    private DatabaseImpl(String name, Path path, Map<String, Table> databaseIndex) {
+        this.name = name;
+        this.path = path;
+        this.databaseIndex = databaseIndex;
+    }
+
     public static Database create(String dbName, Path databaseRoot) throws DatabaseException {
         var db = new DatabaseImpl(dbName, databaseRoot.resolve(dbName));
 
@@ -37,9 +43,7 @@ public class DatabaseImpl implements Database {
     }
 
     public static Database initializeFromContext(DatabaseInitializationContext context) {
-        DatabaseImpl database = new DatabaseImpl(context.getDbName(), context.getDatabasePath());
-        database.databaseIndex = context.getTables();
-        return database;
+        return new DatabaseImpl(context.getDbName(), context.getDatabasePath(), context.getTables());
     }
 
     @Override

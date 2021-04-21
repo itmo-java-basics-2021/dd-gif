@@ -24,6 +24,13 @@ public class TableImpl implements Table {
         this.tableIndex = tableIndex;
     }
 
+    private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex, Segment currentSegment) {
+        this.tableName = tableName;
+        this.path = pathToDatabaseRoot;
+        this.tableIndex = tableIndex;
+        this.currentSegment = currentSegment;
+    }
+
     public static CachingTable create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
         CachingTable table = new CachingTable(new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex));
 
@@ -37,9 +44,8 @@ public class TableImpl implements Table {
     }
 
     public static CachingTable initializeFromContext(TableInitializationContext context) {
-        TableImpl table = new TableImpl(context.getTableName(), context.getTablePath(), context.getTableIndex());
-        table.currentSegment = context.getCurrentSegment();
-        return new CachingTable(table);
+        return new CachingTable(new TableImpl(context.getTableName(), context.getTablePath(),
+                context.getTableIndex(), context.getCurrentSegment()));
     }
 
     @Override
