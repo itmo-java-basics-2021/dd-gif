@@ -35,7 +35,7 @@ public class TableInitializer implements Initializer {
                     table.getName()));
         }
 
-        Path path = context.currentTableContext().getTablePath().resolve(context.currentTableContext().getTableName());
+        Path path = context.currentTableContext().getTablePath();
         File workingDirectory = new File(path.toString());
         File[] segments = workingDirectory.listFiles();
 

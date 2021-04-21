@@ -37,8 +37,7 @@ public class SegmentInitializer implements Initializer {
                     segment.getName()));
         }
 
-        Path path = context.currentSegmentContext().getSegmentPath().
-                resolve(context.currentSegmentContext().getSegmentName());
+        Path path = context.currentSegmentContext().getSegmentPath();
 
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(path)))) {
             var result = dbis.readDbUnit();
