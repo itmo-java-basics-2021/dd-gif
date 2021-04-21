@@ -23,12 +23,6 @@ public class DatabaseImpl implements Database {
         this.path = path;
     }
 
-    // TODO
-    @Override
-    public DatabaseIndex getDatabaseIndex() {
-        return databaseIndex;
-    }
-
     public static Database create(String dbName, Path databaseRoot) throws DatabaseException {
         var db = new DatabaseImpl(dbName, databaseRoot.resolve(dbName));
 

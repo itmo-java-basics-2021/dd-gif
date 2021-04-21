@@ -26,7 +26,7 @@ public interface Table {
     /**
      * Записывает в таблицу переданное значение по указанному ключу.
      *
-     * @param objectKey ключ, по которому нужно записать значение
+     * @param objectKey   ключ, по которому нужно записать значение
      * @param objectValue значение, которое нужно записать
      * @throws DatabaseException если произошла ошибка ввода-вывода
      */
@@ -42,8 +42,5 @@ public interface Table {
     Optional<byte[]> read(String objectKey) throws DatabaseException;
 
     void delete(String objectKey) throws DatabaseException;
-
-    // TODO
-    TableIndex getIndex();
 }
 

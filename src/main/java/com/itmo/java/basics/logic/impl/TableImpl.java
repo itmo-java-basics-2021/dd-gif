@@ -18,12 +18,6 @@ public class TableImpl implements Table {
     private final TableIndex tableIndex;
     private Segment currentSegment;
 
-    // TODO
-    @Override
-    public TableIndex getIndex() {
-        return tableIndex;
-    }
-
     private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
         this.tableName = tableName;
         this.path = pathToDatabaseRoot;

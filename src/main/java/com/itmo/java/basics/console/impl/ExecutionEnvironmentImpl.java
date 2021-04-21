@@ -15,12 +15,6 @@ public class ExecutionEnvironmentImpl implements ExecutionEnvironment {
     private final EnvironmentIndex environmentIndex;
     private static ExecutionEnvironmentImpl executionEnvironment;
 
-    // TODO
-    @Override
-    public EnvironmentIndex getIndex() {
-        return environmentIndex;
-    }
-
     private ExecutionEnvironmentImpl(DatabaseConfig config) {
         this.config = config;
         environmentIndex = new EnvironmentIndex();

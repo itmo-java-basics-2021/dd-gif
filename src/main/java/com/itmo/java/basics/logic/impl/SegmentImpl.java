@@ -27,17 +27,6 @@ public class SegmentImpl implements Segment {
     private SegmentIndex segmentIndex = new SegmentIndex();
     private static final int MAX_SEGMENT_SIZE = 100000;
 
-    // TODO
-    @Override
-    public long getSize() {
-        return size;
-    }
-
-    @Override
-    public SegmentIndex getIndex() {
-        return segmentIndex;
-    }
-
     private SegmentImpl(String segmentName, Path tableRootPath) {
         this.segmentName = segmentName;
         this.tableRootPath = tableRootPath;

@@ -26,6 +26,4 @@ public interface ExecutionEnvironment {
      * @param db база данных, которую нужно добавить
      */
     void addDatabase(Database db);
-
-    EnvironmentIndex getIndex();
 }

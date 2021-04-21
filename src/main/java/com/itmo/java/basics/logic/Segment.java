@@ -47,9 +47,4 @@ public interface Segment {
     boolean isReadOnly();
 
     boolean delete(String objectKey) throws IOException;
-
-    // TODO
-    long getSize();
-
-    SegmentIndex getIndex();
 }

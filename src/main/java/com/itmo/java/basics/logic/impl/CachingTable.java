@@ -41,12 +41,6 @@ public class CachingTable implements Table {
         cache.delete(objectKey);
     }
 
-    // TODO
-    @Override
-    public TableIndex getIndex() {
-        return table.getIndex();
-    }
-
     public TableImpl getTable() {
         return table;
     }

@@ -42,8 +42,4 @@ public interface Database {
     Optional<byte[]> read(String tableName, String objectKey) throws DatabaseException;
 
     void delete(String tableName, String objectKey) throws DatabaseException;
-
-    // TODO
-    DatabaseIndex getDatabaseIndex();
-
 }
