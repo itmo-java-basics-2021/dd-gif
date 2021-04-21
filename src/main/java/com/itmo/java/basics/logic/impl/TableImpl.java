@@ -18,7 +18,7 @@ public class TableImpl implements Table {
     private final TableIndex tableIndex;
     private Segment currentSegment;
 
-    private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
+    private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) {
         this.tableName = tableName;
         this.path = pathToDatabaseRoot;
         this.tableIndex = tableIndex;
