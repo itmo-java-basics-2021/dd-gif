@@ -25,7 +25,7 @@ public class SegmentImpl implements Segment {
     private long size = 0;
     private boolean isReadOnly = false;
     private SegmentIndex segmentIndex = new SegmentIndex();
-    private static final int MAX_SEGMENT_SIZE = 100000;
+    public static final int MAX_SEGMENT_SIZE = 100000;
 
     private SegmentImpl(String segmentName, Path tableRootPath) {
         this.segmentName = segmentName;
@@ -47,6 +47,7 @@ public class SegmentImpl implements Segment {
         SegmentImpl segment = new SegmentImpl(context.getSegmentName(), context.getSegmentPath());
         segment.size = context.getCurrentSize();
         segment.segmentIndex = context.getIndex();
+        segment.isReadOnly = context.getCurrentSize() >= SegmentImpl.MAX_SEGMENT_SIZE;
         return segment;
     }
 
