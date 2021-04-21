@@ -52,7 +52,11 @@ public class SegmentInitializer implements Initializer {
                 result = dbis.readDbUnit();
             }
 
-            Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
+            Segment initializedSegment = SegmentImpl.initializeFromContext(new SegmentInitializationContextImpl(
+                    context.currentSegmentContext().getSegmentName(),
+                    context.currentSegmentContext().getSegmentPath(),
+                    (int)context.currentSegmentContext().getCurrentSize(),
+                    context.currentSegmentContext().getIndex()));
             for (var key : keys) {
                 context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key, initializedSegment);
             }
