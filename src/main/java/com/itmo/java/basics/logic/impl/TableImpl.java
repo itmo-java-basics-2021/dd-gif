@@ -36,7 +36,7 @@ public class TableImpl implements Table {
         return table;
     }
 
-    public static CachingTable initializeFromContext(TableInitializationContext context) throws DatabaseException {
+    public static CachingTable initializeFromContext(TableInitializationContext context) {
         return new CachingTable(new TableImpl(context.getTableName(), context.getTablePath(), context.getTableIndex()));
     }
 
