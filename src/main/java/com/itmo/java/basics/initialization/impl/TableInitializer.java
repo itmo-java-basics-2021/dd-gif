@@ -43,10 +43,10 @@ public class TableInitializer implements Initializer {
         if (segments != null && segments.length != 0) {
             Arrays.sort(segments);
             for (var segment : segments) {
-                if (!segment.exists() || !segment.isFile() || !segment.canRead()) {
-                    throw new DatabaseException(String.format("Something went wrong when trying to initialize segment %s",
-                            segment.getName()));
-                }
+//                if (!segment.exists() || !segment.isFile() || !segment.canRead()) {
+//                    throw new DatabaseException(String.format("Something went wrong when trying to initialize segment %s",
+//                            segment.getName()));
+//                }
 
                 context = new InitializationContextImpl(context.executionEnvironment(),
                         context.currentDbContext(), context.currentTableContext(),
