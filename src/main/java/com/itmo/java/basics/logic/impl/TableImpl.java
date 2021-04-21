@@ -31,19 +31,19 @@ public class TableImpl implements Table {
         this.currentSegment = currentSegment;
     }
 
-    public static CachingTable create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
+    public static Table create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
         CachingTable table = new CachingTable(new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex));
 
         try {
             Files.createDirectory(pathToDatabaseRoot.resolve(tableName));
-            table.getTable().currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.getTable().path);
+//            table.getTable().currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.getTable().path);
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to create table %s in path %s", tableName, pathToDatabaseRoot.toString()), e);
         }
         return table;
     }
 
-    public static CachingTable initializeFromContext(TableInitializationContext context) {
+    public static Table initializeFromContext(TableInitializationContext context) {
         return new CachingTable(new TableImpl(context.getTableName(), context.getTablePath(),
                 context.getTableIndex(), context.getCurrentSegment()));
     }

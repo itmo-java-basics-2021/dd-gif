@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class CachingTable implements Table {
     private final DatabaseCacheImpl cache;
-    private final TableImpl table;
+    private final Table table;
 
     public CachingTable(TableImpl table) {
         this.table = table;
@@ -39,9 +39,5 @@ public class CachingTable implements Table {
     public void delete(String objectKey) throws DatabaseException {
         table.delete(objectKey);
         cache.delete(objectKey);
-    }
-
-    public TableImpl getTable() {
-        return table;
     }
 }

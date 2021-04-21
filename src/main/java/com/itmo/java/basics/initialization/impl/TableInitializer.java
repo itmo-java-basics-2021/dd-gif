@@ -52,7 +52,7 @@ public class TableInitializer implements Initializer {
             }
         }
 
-        CachingTable initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
+        Table initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
         context.currentDbContext().addTable(initializedTable);
     }
 }

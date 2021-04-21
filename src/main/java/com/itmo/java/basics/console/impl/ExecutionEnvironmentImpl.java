@@ -13,18 +13,10 @@ import java.util.Optional;
 public class ExecutionEnvironmentImpl implements ExecutionEnvironment {
     private final DatabaseConfig config;
     private final EnvironmentIndex environmentIndex;
-    private static ExecutionEnvironmentImpl executionEnvironment;
 
     public ExecutionEnvironmentImpl(DatabaseConfig config) {
         this.config = config;
         environmentIndex = new EnvironmentIndex();
-    }
-
-    public static ExecutionEnvironmentImpl create(DatabaseConfig config) {
-        if (executionEnvironment == null) {
-            executionEnvironment = new ExecutionEnvironmentImpl(config);
-        }
-        return executionEnvironment;
     }
 
     @Override
