@@ -29,7 +29,7 @@ public class SegmentInitializer implements Initializer {
      */
     @Override
     public void perform(InitializationContext context) throws DatabaseException {
-        File segment = context.currentDbContext().getDatabasePath().toFile();
+        File segment = context.currentSegmentContext().getSegmentPath().toFile();
         if (!segment.exists() || !segment.isFile() || !segment.canRead()) {
             throw new DatabaseException(String.format("Something went wrong when trying to initialize segment %s",
                     segment.getName()));

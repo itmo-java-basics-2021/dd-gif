@@ -29,11 +29,12 @@ public class TableInitializer implements Initializer {
 
     @Override
     public void perform(InitializationContext context) throws DatabaseException {
-        File table = context.currentDbContext().getDatabasePath().toFile();
+        File table = context.currentTableContext().getTablePath().toFile();
         if (!table.exists() || !table.isDirectory() || !table.canRead()) {
             throw new DatabaseException(String.format("Something went wrong when trying to initialize table %s",
                     table.getName()));
         }
+
         Path path = context.currentTableContext().getTablePath().resolve(context.currentTableContext().getTableName());
         File workingDirectory = new File(path.toString());
         File[] segments = workingDirectory.listFiles();
