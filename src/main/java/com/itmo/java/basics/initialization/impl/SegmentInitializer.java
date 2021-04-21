@@ -43,22 +43,23 @@ public class SegmentInitializer implements Initializer {
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(path)))) {
             var result = dbis.readDbUnit();
             ArrayList<String> keys = new ArrayList<>();
+            int size = 0;
 
             while (result.isPresent()) {
                 context.currentSegmentContext().getIndex().onIndexedEntityUpdated(new String(result.get().getKey()),
-                        new SegmentOffsetInfoImpl(context.currentSegmentContext().getCurrentSize()));
-                context.currentSegmentContext().setCurrentSize(result.get().size());
+                        new SegmentOffsetInfoImpl(size));
+                size += result.get().size();
                 keys.add(new String(result.get().getKey()));
                 result = dbis.readDbUnit();
             }
 
-            if (context.currentSegmentContext().getCurrentSize() != 0) {
+            if (size > 0) {
                 context = new InitializationContextImpl(context.executionEnvironment(), context.currentDbContext(),
                         context.currentTableContext(),
                         new SegmentInitializationContextImpl(
                                 context.currentSegmentContext().getSegmentName(),
                                 context.currentSegmentContext().getSegmentPath(),
-                                (int) context.currentSegmentContext().getCurrentSize(),
+                                size,
                                 context.currentSegmentContext().getIndex()));
             }
 

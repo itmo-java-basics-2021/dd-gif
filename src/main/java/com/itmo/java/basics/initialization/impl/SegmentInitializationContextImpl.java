@@ -44,9 +44,4 @@ public class SegmentInitializationContextImpl implements SegmentInitializationCo
     public long getCurrentSize() {
         return currentSize;
     }
-
-    @Override
-    public void setCurrentSize(long size) {
-        currentSize += size;
-    }
 }

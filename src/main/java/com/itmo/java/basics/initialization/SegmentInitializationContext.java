@@ -32,6 +32,4 @@ public interface SegmentInitializationContext {
      * @return текущий размер инициализируемого сегмента
      */
     long getCurrentSize();
-
-    void setCurrentSize(long size);
 }
