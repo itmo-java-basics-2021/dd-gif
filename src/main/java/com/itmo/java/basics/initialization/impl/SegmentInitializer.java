@@ -51,7 +51,9 @@ public class SegmentInitializer implements Initializer {
             Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
             context.currentTableContext().getTableIndex().onIndexedEntityUpdated(
                     context.currentSegmentContext().getSegmentName(), initializedSegment);
-            context.currentTableContext().updateCurrentSegment(initializedSegment);
+            if (!initializedSegment.isReadOnly()) {
+                context.currentTableContext().updateCurrentSegment(initializedSegment);
+            }
 
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to initialize segment %s",
