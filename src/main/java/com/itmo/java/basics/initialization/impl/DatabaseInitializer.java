@@ -1,6 +1,7 @@
 package com.itmo.java.basics.initialization.impl;
 
 import com.itmo.java.basics.exceptions.DatabaseException;
+import com.itmo.java.basics.index.impl.TableIndex;
 import com.itmo.java.basics.initialization.InitializationContext;
 import com.itmo.java.basics.initialization.Initializer;
 import com.itmo.java.basics.logic.Database;
@@ -52,7 +53,7 @@ public class DatabaseInitializer implements Initializer {
                 var newContext = new InitializationContextImpl(initialContext.executionEnvironment(),
                         initialContext.currentDbContext(),
                         new TableInitializationContextImpl(table.getName(),
-                                initialContext.currentDbContext().getDatabasePath(), null),
+                                initialContext.currentDbContext().getDatabasePath(), new TableIndex()),
                         null);
                 tableInitializer.perform(newContext);
             }
