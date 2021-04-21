@@ -47,6 +47,8 @@ public class DatabaseServerInitializer implements Initializer {
                             context.currentTableContext(), context.currentSegmentContext());
                     databaseInitializer.perform(context);
                 }
+            } else if (databases == null) {
+                throw new DatabaseException("asd");
             }
         }
     }

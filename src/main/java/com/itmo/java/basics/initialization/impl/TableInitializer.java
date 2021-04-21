@@ -50,6 +50,8 @@ public class TableInitializer implements Initializer {
                                 context.currentTableContext().getTablePath(), 0));
                 segmentInitializer.perform(context);
             }
+        } else if (segments == null) {
+            throw new DatabaseException("asd");
         }
 
         CachingTable initializedTable = TableImpl.initializeFromContext(context.currentTableContext());
