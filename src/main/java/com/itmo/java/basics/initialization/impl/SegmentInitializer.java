@@ -29,6 +29,12 @@ public class SegmentInitializer implements Initializer {
      */
     @Override
     public void perform(InitializationContext context) throws DatabaseException {
+        File segment = context.currentDbContext().getDatabasePath().toFile();
+        if (!segment.exists() || !segment.isFile() || !segment.canRead()) {
+            throw new DatabaseException(String.format("Something went wrong when trying to initialize segment %s",
+                    segment.getName()));
+        }
+
         Path path = context.currentSegmentContext().getSegmentPath().
                 resolve(context.currentSegmentContext().getSegmentName());
 
@@ -42,10 +48,10 @@ public class SegmentInitializer implements Initializer {
                 result = dbis.readDbUnit();
             }
 
-            Segment segment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
+            Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
             context.currentTableContext().getTableIndex().onIndexedEntityUpdated(
-                    context.currentSegmentContext().getSegmentName(), segment);
-            context.currentTableContext().updateCurrentSegment(segment);
+                    context.currentSegmentContext().getSegmentName(), initializedSegment);
+            context.currentTableContext().updateCurrentSegment(initializedSegment);
 
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to initialize segment %s",

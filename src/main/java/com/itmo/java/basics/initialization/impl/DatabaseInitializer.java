@@ -3,16 +3,10 @@ package com.itmo.java.basics.initialization.impl;
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.initialization.InitializationContext;
 import com.itmo.java.basics.initialization.Initializer;
-import com.itmo.java.basics.logic.Database;
-import com.itmo.java.basics.logic.impl.CachingTable;
 import com.itmo.java.basics.logic.impl.DatabaseImpl;
-import com.itmo.java.basics.logic.impl.TableImpl;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 public class DatabaseInitializer implements Initializer {
     private final TableInitializer tableInitializer;
@@ -37,19 +31,14 @@ public class DatabaseInitializer implements Initializer {
             throw new DatabaseException(String.format("Something went wrong when trying to initialize db %s",
                     db.getName()));
         }
+
         Path path = initialContext.currentDbContext().getDatabasePath();
         File workingDirectory = new File(path.toString());
         File[] tables = workingDirectory.listFiles();
 
         if (tables != null && tables.length != 0) {
-            InitializationContextImpl newContext;
             for (var table : tables) {
-                if (!table.canRead() || !table.isDirectory() || !table.exists()) {
-                    throw new DatabaseException(String.format("Something went wrong when trying to initialize table %s",
-                            table.getName()));
-                }
-
-                newContext = new InitializationContextImpl(initialContext.executionEnvironment(),
+                InitializationContextImpl newContext = new InitializationContextImpl(initialContext.executionEnvironment(),
                         initialContext.currentDbContext(),
                         new TableInitializationContextImpl(table.getName(),
                                 initialContext.currentDbContext().getDatabasePath(), null),

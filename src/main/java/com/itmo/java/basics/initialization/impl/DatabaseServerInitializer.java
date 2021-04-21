@@ -42,11 +42,6 @@ public class DatabaseServerInitializer implements Initializer {
 
             if (databases != null && databases.length > 0) {
                 for (var database : databases) {
-                    if (!database.isDirectory() || !database.canRead() || !database.exists()) {
-                        throw new DatabaseException(String.format("Something went wrong when trying to initialize db %s",
-                                database.getName()));
-                    }
-
                     var newContext = new InitializationContextImpl(context.executionEnvironment(),
                             new DatabaseInitializationContextImpl(database.getName(), path),
                             context.currentTableContext(), context.currentSegmentContext());
