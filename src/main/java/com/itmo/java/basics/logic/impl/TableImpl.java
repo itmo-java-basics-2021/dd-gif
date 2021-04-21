@@ -18,10 +18,11 @@ public class TableImpl implements Table {
     private final TableIndex tableIndex;
     private Segment currentSegment;
 
-    private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) {
+    private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
         this.tableName = tableName;
         this.path = pathToDatabaseRoot;
         this.tableIndex = tableIndex;
+        this.currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
     }
 
     private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex, Segment currentSegment) {
@@ -36,7 +37,6 @@ public class TableImpl implements Table {
 
         try {
             Files.createDirectory(pathToDatabaseRoot.resolve(tableName));
-//            table.getTable().currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.getTable().path);
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to create table %s in path %s", tableName, pathToDatabaseRoot.toString()), e);
         }
