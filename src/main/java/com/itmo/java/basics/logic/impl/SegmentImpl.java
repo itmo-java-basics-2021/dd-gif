@@ -32,7 +32,7 @@ public class SegmentImpl implements Segment {
         this.tableRootPath = tableRootPath;
     }
 
-    static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
+    public static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
         Segment segment = new SegmentImpl(segmentName, tableRootPath);
         try {
             Files.createFile(tableRootPath.resolve(Paths.get(segment.getName())));
