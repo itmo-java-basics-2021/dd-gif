@@ -39,17 +39,15 @@ public class DatabaseInitializer implements Initializer {
                     db.getName()));
         }
 
+        initialContext.executionEnvironment().addDatabase(
+                DatabaseImpl.initializeFromContext(initialContext.currentDbContext()));
+
         Path path = initialContext.currentDbContext().getDatabasePath();
         File workingDirectory = new File(path.toString());
         File[] tables = workingDirectory.listFiles();
 
         if (tables != null && tables.length != 0) {
             for (var table : tables) {
-//                if (!table.canRead() || !table.isDirectory() || !table.exists()) {
-//                    throw new DatabaseException(String.format("Something went wrong when trying to initialize table %s",
-//                            table.getName()));
-//                }
-
                 initialContext = new InitializationContextImpl(initialContext.executionEnvironment(),
                         initialContext.currentDbContext(),
                         new TableInitializationContextImpl(table.getName(),
@@ -58,8 +56,5 @@ public class DatabaseInitializer implements Initializer {
                 tableInitializer.perform(initialContext);
             }
         }
-
-        initialContext.executionEnvironment().addDatabase(
-                DatabaseImpl.initializeFromContext(initialContext.currentDbContext()));
     }
 }
