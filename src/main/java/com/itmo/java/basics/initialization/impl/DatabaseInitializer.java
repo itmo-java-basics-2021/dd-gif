@@ -11,6 +11,7 @@ import com.itmo.java.basics.logic.impl.TableImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -41,18 +42,18 @@ public class DatabaseInitializer implements Initializer {
 
         Path path = initialContext.currentDbContext().getDatabasePath();
         File workingDirectory = new File(path.toString());
-        File[] tables = workingDirectory.listFiles();
+//        File[] tables = workingDirectory.listFiles();
 
-        if (tables != null && tables.length != 0) {
+        try (DirectoryStream<Path> tables = Files.newDirectoryStream(path)) {
             for (var table : tables) {
                 initialContext = new InitializationContextImpl(initialContext.executionEnvironment(),
                         initialContext.currentDbContext(),
-                        new TableInitializationContextImpl(table.getName(),
+                        new TableInitializationContextImpl(table.toFile().getName(),
                                 initialContext.currentDbContext().getDatabasePath(), new TableIndex()),
                         initialContext.currentSegmentContext());
                 tableInitializer.perform(initialContext);
             }
-        } else if (tables == null) {
+        } catch (IOException e) {
             throw new DatabaseException("asd");
         }
 

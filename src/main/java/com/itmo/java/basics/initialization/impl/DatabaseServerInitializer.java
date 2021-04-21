@@ -7,6 +7,7 @@ import com.itmo.java.basics.logic.impl.DatabaseImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -28,7 +29,7 @@ public class DatabaseServerInitializer implements Initializer {
     @Override
     public void perform(InitializationContext context) throws DatabaseException {
         Path path = context.executionEnvironment().getWorkingPath();
-        File workingDirectory = new File(path.toString());
+//        File workingDirectory = new File(path.toString());
 
         if (!path.toFile().exists()) {
             try {
@@ -38,16 +39,16 @@ public class DatabaseServerInitializer implements Initializer {
                         " %s", path.toString()), e);
             }
         } else {
-            File[] databases = workingDirectory.listFiles();
+//            File[] databases = workingDirectory.listFiles();
 
-            if (databases != null && databases.length > 0) {
+            try (DirectoryStream<Path> databases = Files.newDirectoryStream(path)) {
                 for (var database : databases) {
                     context = new InitializationContextImpl(context.executionEnvironment(),
-                            new DatabaseInitializationContextImpl(database.getName(), path),
+                            new DatabaseInitializationContextImpl(database.toFile().getName(), path),
                             context.currentTableContext(), context.currentSegmentContext());
                     databaseInitializer.perform(context);
                 }
-            } else if (databases == null) {
+            } catch (IOException e) {
                 throw new DatabaseException("asd");
             }
         }
