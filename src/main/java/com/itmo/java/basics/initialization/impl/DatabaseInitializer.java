@@ -39,7 +39,7 @@ public class DatabaseInitializer implements Initializer {
         if (tables != null && tables.length != 0) {
             InitializationContextImpl newContext;
             for (var table : tables) {
-                if (!table.canRead() || table.isFile() || !table.exists()) {
+                if (!table.canRead() || !table.isDirectory() || !table.exists()) {
                     throw new DatabaseException(String.format("Something went wrong when trying to initialize table %s",
                             table.getName()));
                 }
