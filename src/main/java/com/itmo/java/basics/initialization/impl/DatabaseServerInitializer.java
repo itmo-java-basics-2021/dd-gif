@@ -47,14 +47,12 @@ public class DatabaseServerInitializer implements Initializer {
                                 database.getName()));
                     }
 
-                    var newContext = new InitializationContextImpl(context.executionEnvironment(),
+                    context = new InitializationContextImpl(context.executionEnvironment(),
                             new DatabaseInitializationContextImpl(database.getName(), path),
                             context.currentTableContext(), context.currentSegmentContext());
-                    databaseInitializer.perform(newContext);
+                    databaseInitializer.perform(context);
                 }
             }
         }
-
-//        System.out.println(context);
     }
 }

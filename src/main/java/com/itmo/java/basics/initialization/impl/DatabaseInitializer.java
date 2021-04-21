@@ -50,12 +50,12 @@ public class DatabaseInitializer implements Initializer {
                             table.getName()));
                 }
 
-                var newContext = new InitializationContextImpl(initialContext.executionEnvironment(),
+                initialContext = new InitializationContextImpl(initialContext.executionEnvironment(),
                         initialContext.currentDbContext(),
                         new TableInitializationContextImpl(table.getName(),
                                 initialContext.currentDbContext().getDatabasePath(), new TableIndex()),
                         initialContext.currentSegmentContext());
-                tableInitializer.perform(newContext);
+                tableInitializer.perform(initialContext);
             }
         }
 

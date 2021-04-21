@@ -48,11 +48,11 @@ public class TableInitializer implements Initializer {
                             segment.getName()));
                 }
 
-                var newContext = new InitializationContextImpl(context.executionEnvironment(),
+                context = new InitializationContextImpl(context.executionEnvironment(),
                         context.currentDbContext(), context.currentTableContext(),
                         new SegmentInitializationContextImpl(segment.getName(),
                                 context.currentTableContext().getTablePath(), 0));
-                segmentInitializer.perform(newContext);
+                segmentInitializer.perform(context);
             }
         }
 
