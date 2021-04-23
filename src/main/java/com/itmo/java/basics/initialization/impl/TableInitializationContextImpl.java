@@ -15,7 +15,7 @@ public class TableInitializationContextImpl implements TableInitializationContex
     public TableInitializationContextImpl(String tableName, Path databasePath, TableIndex tableIndex) {
         this.tableName = tableName;
         this.databasePath = databasePath;
-        this.tableIndex = new TableIndex();
+        this.tableIndex = tableIndex;
     }
 
     @Override

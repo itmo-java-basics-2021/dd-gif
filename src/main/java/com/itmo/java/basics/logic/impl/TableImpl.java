@@ -3,7 +3,6 @@ package com.itmo.java.basics.logic.impl;
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.index.impl.TableIndex;
 import com.itmo.java.basics.initialization.TableInitializationContext;
-import com.itmo.java.basics.initialization.impl.TableInitializationContextImpl;
 import com.itmo.java.basics.logic.Segment;
 import com.itmo.java.basics.logic.Table;
 
@@ -18,12 +17,6 @@ public class TableImpl implements Table {
     private final TableIndex tableIndex;
     private Segment currentSegment;
 
-    private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) {
-        this.tableName = tableName;
-        this.path = pathToDatabaseRoot;
-        this.tableIndex = tableIndex;
-    }
-
     private TableImpl(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex, Segment currentSegment) {
         this.tableName = tableName;
         this.path = pathToDatabaseRoot;
@@ -32,11 +25,10 @@ public class TableImpl implements Table {
     }
 
     public static Table create(String tableName, Path pathToDatabaseRoot, TableIndex tableIndex) throws DatabaseException {
-        TableImpl table = new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex);
+        TableImpl table = new TableImpl(tableName, pathToDatabaseRoot.resolve(tableName), tableIndex, null);
 
         try {
             Files.createDirectory(pathToDatabaseRoot.resolve(tableName));
-//            table.currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.path);
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to create table %s in path %s", tableName, pathToDatabaseRoot.toString()), e);
         }
