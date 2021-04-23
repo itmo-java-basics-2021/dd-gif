@@ -86,7 +86,9 @@ public class SegmentImpl implements Segment {
             return Optional.empty();
         }
 
-        try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName)))))) {
+
+
+        try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath)))) {
             dbis.skip(segmentIndex.searchForKey(objectKey).orElseThrow(() -> new IllegalArgumentException("The key wasn't found")).getOffset());
             var result = dbis.readDbUnit();
             if (result.isPresent() && result.get().isValuePresented()) {
@@ -98,7 +100,6 @@ public class SegmentImpl implements Segment {
                 return Optional.empty();
             }
         }
-
     }
 
     @Override

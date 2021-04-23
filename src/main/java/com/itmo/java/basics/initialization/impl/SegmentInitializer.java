@@ -4,6 +4,7 @@ import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.index.impl.SegmentOffsetInfoImpl;
 import com.itmo.java.basics.initialization.InitializationContext;
 import com.itmo.java.basics.initialization.Initializer;
+import com.itmo.java.basics.logic.DatabaseRecord;
 import com.itmo.java.basics.logic.Segment;
 import com.itmo.java.basics.logic.impl.RemoveDatabaseRecord;
 import com.itmo.java.basics.logic.impl.SegmentImpl;
@@ -29,6 +30,7 @@ public class SegmentInitializer implements Initializer {
      * @param context контекст с информацией об инициализируемой бд и об окружении
      * @throws DatabaseException если в контексте лежит неправильный путь к сегменту, невозможно прочитать содержимое. Ошибка в содержании
      */
+
     @Override
     public void perform(InitializationContext context) throws DatabaseException {
         File segment = context.currentSegmentContext().getSegmentPath().toFile();
@@ -40,18 +42,20 @@ public class SegmentInitializer implements Initializer {
         Path path = context.currentSegmentContext().getSegmentPath();
 
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(path)))) {
-            var result = dbis.readDbUnit();
+            Optional<DatabaseRecord> result;
             ArrayList<String> keys = new ArrayList<>();
             int size = 0;
 
-            Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
-
-            while (result.isPresent()) {
+            while (dbis.available() > 0) {
+                try {
+                    result = dbis.readDbUnit();
+                } catch (IOException e) {
+                    break;
+                }
                 context.currentSegmentContext().getIndex().onIndexedEntityUpdated(new String(result.get().getKey()),
                         new SegmentOffsetInfoImpl(size));
                 size += result.get().size();
                 keys.add(new String(result.get().getKey()));
-                result = dbis.readDbUnit();
             }
 
             if (size > 0) {
@@ -64,10 +68,13 @@ public class SegmentInitializer implements Initializer {
                                 context.currentSegmentContext().getIndex()));
             }
 
-            for (var key : keys) {
-                context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key, initializedSegment);
-            }
+            Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
+
             context.currentTableContext().updateCurrentSegment(initializedSegment);
+            for (var key : keys) {
+                context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key,
+                        context.currentTableContext().getCurrentSegment());
+            }
 
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to initialize segment %s",
