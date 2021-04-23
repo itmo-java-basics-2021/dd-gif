@@ -44,13 +44,15 @@ public class DatabaseInitializer implements Initializer {
         File[] tables = workingDirectory.listFiles();
 
         if (tables != null && tables.length != 0) {
+            InitializationContextImpl newContext;
+
             for (var table : tables) {
-                initialContext = new InitializationContextImpl(initialContext.executionEnvironment(),
+                newContext = new InitializationContextImpl(initialContext.executionEnvironment(),
                         initialContext.currentDbContext(),
                         new TableInitializationContextImpl(table.getName(),
                                 initialContext.currentDbContext().getDatabasePath(), new TableIndex()),
                         initialContext.currentSegmentContext());
-                tableInitializer.perform(initialContext);
+                tableInitializer.perform(newContext);
             }
         }
 

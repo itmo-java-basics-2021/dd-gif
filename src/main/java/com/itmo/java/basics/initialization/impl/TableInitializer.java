@@ -42,12 +42,14 @@ public class TableInitializer implements Initializer {
 
         if (segments != null && segments.length != 0) {
             Arrays.sort(segments);
+            InitializationContextImpl newContext;
+
             for (var segment : segments) {
-                context = new InitializationContextImpl(context.executionEnvironment(),
+                newContext = new InitializationContextImpl(context.executionEnvironment(),
                         context.currentDbContext(), context.currentTableContext(),
                         new SegmentInitializationContextImpl(segment.getName(),
                                 context.currentTableContext().getTablePath(), 0));
-                segmentInitializer.perform(context);
+                segmentInitializer.perform(newContext);
             }
         }
 

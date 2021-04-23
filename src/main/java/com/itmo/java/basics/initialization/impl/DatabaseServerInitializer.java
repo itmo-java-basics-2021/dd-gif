@@ -39,13 +39,14 @@ public class DatabaseServerInitializer implements Initializer {
             }
         } else {
             File[] databases = workingDirectory.listFiles();
+            InitializationContextImpl newContext;
 
             if (databases != null && databases.length > 0) {
                 for (var database : databases) {
-                    context = new InitializationContextImpl(context.executionEnvironment(),
+                    newContext = new InitializationContextImpl(context.executionEnvironment(),
                             new DatabaseInitializationContextImpl(database.getName(), path),
                             context.currentTableContext(), context.currentSegmentContext());
-                    databaseInitializer.perform(context);
+                    databaseInitializer.perform(newContext);
                 }
             }
         }
