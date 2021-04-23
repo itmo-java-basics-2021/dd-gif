@@ -4,7 +4,7 @@ import com.itmo.java.basics.logic.WritableDatabaseRecord;
 
 public class RemoveDatabaseRecord implements WritableDatabaseRecord {
     private final byte[] key;
-    private final byte[] value = new byte[]{};
+    private final byte[] value = null;
 
     public RemoveDatabaseRecord(byte[] key) {
         this.key = key;
