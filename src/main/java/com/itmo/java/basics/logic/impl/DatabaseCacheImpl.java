@@ -23,7 +23,7 @@ public class DatabaseCacheImpl implements DatabaseCache {
     public void set(String key, byte[] value) {
         if (cache.containsKey(key)) {
             this.delete(key);
-        } else if (cache.size() == CACHE_SIZE){
+        } else if (cache.size() == CACHE_SIZE) {
             Iterator<String> iterator = cache.keySet().iterator();
             iterator.next();
             iterator.remove();

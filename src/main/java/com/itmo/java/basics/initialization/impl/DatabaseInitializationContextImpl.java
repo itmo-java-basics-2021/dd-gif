@@ -5,7 +5,6 @@ import com.itmo.java.basics.logic.Table;
 
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DatabaseInitializationContextImpl implements DatabaseInitializationContext {

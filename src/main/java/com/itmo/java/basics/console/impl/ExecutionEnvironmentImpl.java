@@ -2,13 +2,10 @@ package com.itmo.java.basics.console.impl;
 
 import com.itmo.java.basics.config.DatabaseConfig;
 import com.itmo.java.basics.console.ExecutionEnvironment;
-import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.index.impl.EnvironmentIndex;
 import com.itmo.java.basics.logic.Database;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public class ExecutionEnvironmentImpl implements ExecutionEnvironment {

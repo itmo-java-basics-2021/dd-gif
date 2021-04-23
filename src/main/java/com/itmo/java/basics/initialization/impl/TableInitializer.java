@@ -4,11 +4,9 @@ import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.initialization.InitializationContext;
 import com.itmo.java.basics.initialization.Initializer;
 import com.itmo.java.basics.logic.Table;
-import com.itmo.java.basics.logic.impl.CachingTable;
 import com.itmo.java.basics.logic.impl.TableImpl;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 
@@ -25,7 +23,7 @@ public class TableInitializer implements Initializer {
      *
      * @param context контекст с информацией об инициализируемой бд, окружении, таблицы
      * @throws DatabaseException если в контексте лежит неправильный путь к таблице, невозможно прочитать содержимого папки,
-     *  или если возникла ошибка ошибка дочерних инициализаторов
+     *                           или если возникла ошибка ошибка дочерних инициализаторов
      */
 
     @Override
