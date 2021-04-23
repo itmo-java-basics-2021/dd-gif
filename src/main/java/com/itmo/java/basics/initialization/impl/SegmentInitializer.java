@@ -73,7 +73,7 @@ public class SegmentInitializer implements Initializer {
             context.currentTableContext().updateCurrentSegment(initializedSegment);
             for (var key : keys) {
                 context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key,
-                        context.currentTableContext().getCurrentSegment());
+                        initializedSegment);
             }
 
         } catch (IOException e) {
