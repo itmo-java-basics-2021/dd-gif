@@ -41,9 +41,10 @@ public class SegmentImpl implements Segment {
     }
 
     public static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
+        tableRootPath = tableRootPath.resolve(Paths.get(segmentName));
         Segment segment = new SegmentImpl(segmentName, tableRootPath);
         try {
-            Files.createFile(tableRootPath.resolve(Paths.get(segment.getName())));
+            Files.createFile(tableRootPath);
         } catch (IOException e) {
             throw new DatabaseException(e);
         }
