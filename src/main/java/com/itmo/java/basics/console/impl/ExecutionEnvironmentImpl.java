@@ -14,6 +14,7 @@ import java.util.Optional;
 public class ExecutionEnvironmentImpl implements ExecutionEnvironment {
     private final DatabaseConfig config;
     private final Map<String, Database> index = new HashMap<>();
+    private final EnvironmentIndex environmentIndex = new EnvironmentIndex();
 
     public ExecutionEnvironmentImpl(DatabaseConfig config) {
         this.config = config;
@@ -21,12 +22,14 @@ public class ExecutionEnvironmentImpl implements ExecutionEnvironment {
 
     @Override
     public Optional<Database> getDatabase(String name) {
-        return Optional.of(index.get(name));
+//        return Optional.of(index.get(name));
+        return environmentIndex.searchForKey(name);
     }
 
     @Override
     public void addDatabase(Database db) {
-        index.put(db.getName(), db);
+//        index.put(db.getName(), db);
+        environmentIndex.onIndexedEntityUpdated(db.getName(), db);
     }
 
     @Override
