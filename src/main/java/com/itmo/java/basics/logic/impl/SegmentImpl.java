@@ -87,8 +87,6 @@ public class SegmentImpl implements Segment {
             return Optional.empty();
         }
 
-
-
         try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath)))) {
             dbis.skip(segmentIndex.searchForKey(objectKey).orElseThrow(() -> new IllegalArgumentException("The key wasn't found")).getOffset());
             var result = dbis.readDbUnit();
@@ -119,7 +117,8 @@ public class SegmentImpl implements Segment {
     }
 
     private boolean appendToFile(String objectKey, WritableDatabaseRecord databaseRecord) throws IOException {
-        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true))) {
+        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(
+                String.valueOf(tableRootPath), true))) {
             segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
             size += dbos.write(databaseRecord);
         }
