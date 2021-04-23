@@ -36,7 +36,7 @@ public class TableImpl implements Table {
 
         try {
             Files.createDirectory(pathToDatabaseRoot.resolve(tableName));
-            table.currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.path);
+//            table.currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), table.path);
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to create table %s in path %s", tableName, pathToDatabaseRoot.toString()), e);
         }
@@ -57,7 +57,10 @@ public class TableImpl implements Table {
     @Override
     public void write(String objectKey, byte[] objectValue) throws DatabaseException {
         try {
-            if (!currentSegment.write(objectKey, objectValue)) {
+            if (currentSegment == null) {
+                currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
+                currentSegment.write(objectKey, objectValue);
+            } else if (!currentSegment.write(objectKey, objectValue)) {
                 currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
                 currentSegment.write(objectKey, objectValue);
             }
