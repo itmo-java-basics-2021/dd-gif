@@ -70,12 +70,12 @@ public class SegmentInitializer implements Initializer {
 
             Segment initializedSegment = SegmentImpl.initializeFromContext(context.currentSegmentContext());
 
-            context.currentTableContext().updateCurrentSegment(initializedSegment);
             for (var key : keys) {
                 context.currentTableContext().getTableIndex().onIndexedEntityUpdated(key,
                         initializedSegment);
             }
 
+            context.currentTableContext().updateCurrentSegment(initializedSegment);
         } catch (IOException e) {
             throw new DatabaseException(String.format("IO exception when trying to initialize segment %s",
                     context.currentSegmentContext().getSegmentName()), e);
