@@ -49,7 +49,7 @@ public class TableImpl implements Table {
     @Override
     public void write(String objectKey, byte[] objectValue) throws DatabaseException {
         try {
-            if (!currentSegment.write(objectKey, objectValue)) {
+            if (!currentSegment.write(objectKey, objectValue) || currentSegment == null) {
                 currentSegment = SegmentImpl.create(SegmentImpl.createSegmentName(tableName), path);
                 currentSegment.write(objectKey, objectValue);
             }
