@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MapBasedKvsIndex<K, V> implements KvsIndex<K, V> {
-    protected final Map<K, V> index = new HashMap<>(200);
+    private final Map<K, V> index = new HashMap<>(200);
 
     @Override
     public void onIndexedEntityUpdated(K key, V value) {

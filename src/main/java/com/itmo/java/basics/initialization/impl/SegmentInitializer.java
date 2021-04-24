@@ -42,11 +42,7 @@ public class SegmentInitializer implements Initializer {
             int size = 0;
 
             while (dbis.available() > 0) {
-                try {
-                    result = dbis.readDbUnit();
-                } catch (IOException e) {
-                    break;
-                }
+                result = dbis.readDbUnit();
                 context.currentSegmentContext().getIndex().onIndexedEntityUpdated(new String(result.get().getKey()),
                         new SegmentOffsetInfoImpl(size));
                 size += result.get().size();

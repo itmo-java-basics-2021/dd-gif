@@ -21,13 +21,7 @@ public class DatabaseCacheImpl implements DatabaseCache {
 
     @Override
     public void set(String key, byte[] value) {
-        if (cache.containsKey(key)) {
-            this.delete(key);
-        } else if (cache.size() == CACHE_SIZE) {
-            Iterator<String> iterator = cache.keySet().iterator();
-            iterator.next();
-            iterator.remove();
-        }
+        removeEldestEntity(key);
 
         cache.put(key, value);
     }
@@ -35,5 +29,15 @@ public class DatabaseCacheImpl implements DatabaseCache {
     @Override
     public void delete(String key) {
         cache.remove(key);
+    }
+
+    private void removeEldestEntity(String key) {
+        if (cache.containsKey(key)) {
+            this.delete(key);
+        } else if (cache.size() == CACHE_SIZE) {
+            Iterator<String> iterator = cache.keySet().iterator();
+            iterator.next();
+            iterator.remove();
+        }
     }
 }
