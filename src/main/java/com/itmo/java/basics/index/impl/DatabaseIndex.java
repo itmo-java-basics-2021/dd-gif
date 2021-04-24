@@ -6,7 +6,4 @@ import com.itmo.java.basics.logic.impl.CachingTable;
 import java.util.Map;
 
 public class DatabaseIndex extends MapBasedKvsIndex<String, Table>{
-    public Map<String, Table> getIndex() {
-        return index;
-    }
 }

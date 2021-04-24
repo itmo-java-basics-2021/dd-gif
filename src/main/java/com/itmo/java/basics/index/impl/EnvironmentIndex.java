@@ -6,7 +6,4 @@ import com.itmo.java.basics.logic.Table;
 import java.util.Map;
 
 public class EnvironmentIndex extends MapBasedKvsIndex<String, Database>{
-    public Map<String, Database> getIndex() {
-        return index;
-    }
 }
