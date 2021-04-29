@@ -2,12 +2,17 @@ package com.itmo.java.basics.logic.impl;
 
 import com.itmo.java.basics.logic.DatabaseCache;
 
-import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class DatabaseCacheImpl implements DatabaseCache {
     public static final int CACHE_SIZE = 5000;
-    private final LinkedHashMap<String, byte[]> cache = new LinkedHashMap<>();
+    private final LinkedHashMap<String, byte[]> cache = new LinkedHashMap<>() {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<String, byte[]> eldest) {
+            return size() > CACHE_SIZE;
+        }
+    };
 
     @Override
     public byte[] get(String key) {
@@ -21,23 +26,11 @@ public class DatabaseCacheImpl implements DatabaseCache {
 
     @Override
     public void set(String key, byte[] value) {
-        removeEldestEntity(key);
-
         cache.put(key, value);
     }
 
     @Override
     public void delete(String key) {
         cache.remove(key);
-    }
-
-    private void removeEldestEntity(String key) {
-        if (cache.containsKey(key)) {
-            this.delete(key);
-        } else if (cache.size() == CACHE_SIZE) {
-            Iterator<String> iterator = cache.keySet().iterator();
-            iterator.next();
-            iterator.remove();
-        }
     }
 }
