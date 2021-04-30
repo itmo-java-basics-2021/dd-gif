@@ -1,5 +1,6 @@
 package com.itmo.java.basics.console;
 
+import com.itmo.java.basics.index.impl.EnvironmentIndex;
 import com.itmo.java.basics.logic.Database;
 
 import java.nio.file.Path;

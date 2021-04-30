@@ -31,10 +31,16 @@ public class DatabaseOutputStream extends DataOutputStream {
      * @throws IOException если запись не удалась
      */
     public long write(WritableDatabaseRecord databaseRecord) throws IOException {
-        writeInt(databaseRecord.getKeySize());
-        out.write(databaseRecord.getKey());
-        writeInt(databaseRecord.getValueSize());
-        out.write(databaseRecord.getValue());
+        if (databaseRecord.getValue() == null) {
+            writeInt(databaseRecord.getKeySize());
+            out.write(databaseRecord.getKey());
+            writeInt(databaseRecord.getValueSize());
+        } else {
+            writeInt(databaseRecord.getKeySize());
+            out.write(databaseRecord.getKey());
+            writeInt(databaseRecord.getValueSize());
+            out.write(databaseRecord.getValue());
+        }
         return databaseRecord.size();
     }
 }

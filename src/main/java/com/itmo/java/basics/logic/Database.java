@@ -1,6 +1,7 @@
 package com.itmo.java.basics.logic;
 
 import com.itmo.java.basics.exceptions.DatabaseException;
+import com.itmo.java.basics.index.impl.DatabaseIndex;
 
 import java.util.Optional;
 

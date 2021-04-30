@@ -1,5 +1,7 @@
 package com.itmo.java.basics.logic;
 
+import com.itmo.java.basics.index.impl.SegmentIndex;
+
 import java.io.IOException;
 import java.util.Optional;
 

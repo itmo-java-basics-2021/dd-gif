@@ -2,6 +2,7 @@ package com.itmo.java.basics.logic.impl;
 
 import com.itmo.java.basics.index.impl.SegmentIndex;
 import com.itmo.java.basics.index.impl.SegmentOffsetInfoImpl;
+import com.itmo.java.basics.initialization.SegmentInitializationContext;
 import com.itmo.java.basics.logic.Segment;
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.logic.WritableDatabaseRecord;
@@ -21,26 +22,40 @@ import java.util.Optional;
 public class SegmentImpl implements Segment {
     private final String segmentName;
     private final Path tableRootPath;
-    private int size = 0;
+    private long size = 0;
     private boolean isReadOnly = false;
-    private final SegmentIndex segmentIndex = new SegmentIndex();
-    private static final int MAX_SEGMENT_SIZE = 100000;
+    private SegmentIndex segmentIndex = new SegmentIndex();
+    public static final int MAX_SEGMENT_SIZE = 100000;
 
-
-    public SegmentImpl(String segmentName, Path tableRootPath) {
+    private SegmentImpl(String segmentName, Path tableRootPath) {
         this.segmentName = segmentName;
         this.tableRootPath = tableRootPath;
     }
 
-    static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
+    private SegmentImpl(String segmentName, Path tableRootPath, long size, SegmentIndex index, boolean isReadOnly) {
+        this.segmentName = segmentName;
+        this.tableRootPath = tableRootPath;
+        this.size = size;
+        this.segmentIndex = index;
+        this.isReadOnly = isReadOnly;
+    }
+
+    public static Segment create(String segmentName, Path tableRootPath) throws DatabaseException {
+        tableRootPath = tableRootPath.resolve(Paths.get(segmentName));
         Segment segment = new SegmentImpl(segmentName, tableRootPath);
         try {
-            Files.createFile(tableRootPath.resolve(Paths.get(segment.getName())));
+            Files.createFile(tableRootPath);
         } catch (IOException e) {
             throw new DatabaseException(e);
         }
 
         return segment;
+    }
+
+    public static Segment initializeFromContext(SegmentInitializationContext context) {
+        return new SegmentImpl(context.getSegmentName(), context.getSegmentPath(),
+                context.getCurrentSize(), context.getIndex(),
+                context.getCurrentSize() >= SegmentImpl.MAX_SEGMENT_SIZE);
     }
 
     static String createSegmentName(String tableName) {
@@ -72,7 +87,7 @@ public class SegmentImpl implements Segment {
             return Optional.empty();
         }
 
-        try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName)))))) {
+        try (DatabaseInputStream dbis = new DatabaseInputStream(new FileInputStream(String.valueOf(tableRootPath)))) {
             dbis.skip(segmentIndex.searchForKey(objectKey).orElseThrow(() -> new IllegalArgumentException("The key wasn't found")).getOffset());
             var result = dbis.readDbUnit();
             if (result.isPresent() && result.get().isValuePresented()) {
@@ -84,7 +99,6 @@ public class SegmentImpl implements Segment {
                 return Optional.empty();
             }
         }
-
     }
 
     @Override
@@ -103,7 +117,8 @@ public class SegmentImpl implements Segment {
     }
 
     private boolean appendToFile(String objectKey, WritableDatabaseRecord databaseRecord) throws IOException {
-        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(String.valueOf(tableRootPath.resolve(Paths.get(segmentName))), true))) {
+        try (DatabaseOutputStream dbos = new DatabaseOutputStream(new FileOutputStream(
+                String.valueOf(tableRootPath), true))) {
             segmentIndex.onIndexedEntityUpdated(objectKey, new SegmentOffsetInfoImpl(size));
             size += dbos.write(databaseRecord);
         }
