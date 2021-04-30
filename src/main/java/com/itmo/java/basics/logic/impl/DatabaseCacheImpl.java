@@ -16,10 +16,13 @@ public class DatabaseCacheImpl implements DatabaseCache {
 
     @Override
     public byte[] get(String key) {
-        if (cache.get(key) == null) {
+        byte[] value = cache.get(key);
+
+        if (value == null) {
             return null;
         } else {
-            this.set(key, cache.get(key));
+            this.delete(key);
+            this.set(key, value);
         }
         return cache.get(key);
     }
