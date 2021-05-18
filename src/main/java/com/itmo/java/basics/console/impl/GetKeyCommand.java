@@ -66,12 +66,14 @@ public class GetKeyCommand implements DatabaseCommand {
 
             Optional<Database> db = env.getDatabase(dbName);
             if (db.isEmpty()) {
-                throw new DatabaseException("Database Exception: database " + dbName + " is not exist");
+                return DatabaseCommandResult.error(
+                        new DatabaseException("Database Exception: database " + dbName + " is not exist"));
             }
 
-            byte[] result = db.get().read(tbName, key).get();
+            Optional<byte[]> value = db.get().read(tbName, key);
 
-            return DatabaseCommandResult.success(result);
+            return DatabaseCommandResult.success(("The value of the key {" + key + "} was read successfully: " +
+                    (value.isEmpty() ? "deleted-value" : new String(value.get()))).getBytes(StandardCharsets.UTF_8));
         } catch (DatabaseException e) {
             return DatabaseCommandResult.error(e);
         }
