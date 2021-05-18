@@ -31,7 +31,7 @@ public class DirectReferenceKvsConnection implements KvsConnection {
 
             return databaseCommandResult.get().serialize();
         } catch (InterruptedException | ExecutionException e) {
-            throw new ConnectionException("asd", e.getCause());
+            throw new ConnectionException(e.getMessage(), e.getCause());
         }
     }
 
