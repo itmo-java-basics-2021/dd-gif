@@ -19,7 +19,7 @@ public class CreateTableCommand implements DatabaseCommand {
 
     private final ExecutionEnvironment env;
     private final List<RespObject> commandArgs;
-    private final static int REQUIRED_ARGUMENTS = 3;
+    private final static int REQUIRED_ARGUMENTS = 4;
 
     /**
      * Создает команду
