@@ -56,7 +56,8 @@ public class SimpleKvsClient implements KvsClient {
 
             if (result.isError()) {
                 // TODO
-                throw new DatabaseExecutionException("error");
+//                throw new DatabaseExecutionException("error");
+                return result.asString();
             }
 
             return result.asString();
@@ -75,7 +76,8 @@ public class SimpleKvsClient implements KvsClient {
 
             if (result.isError()) {
                 // TODO
-                throw new DatabaseExecutionException("error");
+//                throw new DatabaseExecutionException("error");
+                return result.asString();
             }
 
             return result.asString();
@@ -94,7 +96,8 @@ public class SimpleKvsClient implements KvsClient {
 
             if (result.isError()) {
                 // TODO
-                throw new DatabaseExecutionException("error");
+//                throw new DatabaseExecutionException("error");
+                return result.asString();
             }
 
             return result.asString();
@@ -113,7 +116,8 @@ public class SimpleKvsClient implements KvsClient {
 
             if (result.isError()) {
                 // TODO
-                throw new DatabaseExecutionException("error");
+//                throw new DatabaseExecutionException("error");
+                return result.asString();
             }
 
             return result.asString();

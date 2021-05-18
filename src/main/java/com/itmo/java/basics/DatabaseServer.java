@@ -58,8 +58,7 @@ public class DatabaseServer {
                 command = DatabaseCommands.DELETE_KEY.getCommand(env, args);
                 break;
             default:
-                // TODO ???
-                throw new IllegalStateException("Unexpected value: " + args.get(1).asString());
+                throw new IllegalStateException("Wrong command: " + args.get(1).asString());
         }
 
         return executeNextCommand(command);

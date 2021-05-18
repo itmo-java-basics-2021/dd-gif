@@ -38,7 +38,7 @@ public class SetKeyCommand implements DatabaseCommand {
             throw new IllegalArgumentException("Illegal Argument Exception: command arguments is null");
         }
 
-        if (commandArgs.size() != REQUIRED_ARGUMENTS) {
+        if (commandArgs.size() < REQUIRED_ARGUMENTS) {
             throw new IllegalArgumentException("Illegal Argument Exception: command arguments number is wrong");
         }
 
