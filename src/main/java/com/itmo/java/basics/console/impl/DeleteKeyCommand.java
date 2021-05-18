@@ -73,7 +73,7 @@ public class DeleteKeyCommand implements DatabaseCommand {
             Optional<byte[]> value = db.get().read(tbName, key);
             db.get().delete(tbName, key);
 
-            return DatabaseCommandResult.success(value.isEmpty() ? null : value.get());
+            return DatabaseCommandResult.success(value.get());
         } catch (DatabaseException e) {
             return DatabaseCommandResult.error(e);
         }
