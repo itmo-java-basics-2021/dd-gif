@@ -67,6 +67,10 @@ public class SetKeyCommand implements DatabaseCommand {
             String value = commandArgs.get(DatabaseCommandArgPositions.VALUE.getPositionIndex()).asString();
 
             Optional<Database> db = env.getDatabase(dbName);
+            if (db.isEmpty()) {
+                throw new DatabaseException("Database Exception: database " + dbName + " is not exist");
+            }
+
             db.get().write(tbName, key, value.getBytes(StandardCharsets.UTF_8));
 
             return DatabaseCommandResult.success(

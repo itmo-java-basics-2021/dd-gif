@@ -64,7 +64,12 @@ public class CreateTableCommand implements DatabaseCommand {
             String tbName = commandArgs.get(DatabaseCommandArgPositions.TABLE_NAME.getPositionIndex()).asString();
 
             Optional<Database> db = env.getDatabase(dbName);
-            db.get().createTableIfNotExists(tbName);
+            if (db.isPresent()) {
+                db.get().createTableIfNotExists(tbName);
+            } else {
+                return DatabaseCommandResult.error(
+                        new DatabaseException("Database Exception: database " + dbName + " is not exist"));
+            }
 
             return DatabaseCommandResult.success(
                     ("Table " + tbName + " was created successfully").getBytes(StandardCharsets.UTF_8));
