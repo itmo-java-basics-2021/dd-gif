@@ -72,11 +72,10 @@ public class SetKeyCommand implements DatabaseCommand {
                         new DatabaseException("Database Exception: database " + dbName + " is not exist"));
             }
 
+            Optional<byte[]> prev = db.get().read(tbName, key);
             db.get().write(tbName, key, value.getBytes(StandardCharsets.UTF_8));
 
-            return DatabaseCommandResult.success(
-                    ("Pair key-value {" + key + ";" + value +
-                            "} was added successfully").getBytes(StandardCharsets.UTF_8));
+            return DatabaseCommandResult.success(prev.isEmpty() ? null : prev.get());
         } catch (DatabaseException e) {
             return DatabaseCommandResult.error(e);
         }

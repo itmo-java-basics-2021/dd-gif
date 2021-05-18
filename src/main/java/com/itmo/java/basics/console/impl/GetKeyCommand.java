@@ -72,8 +72,7 @@ public class GetKeyCommand implements DatabaseCommand {
 
             Optional<byte[]> value = db.get().read(tbName, key);
 
-            return DatabaseCommandResult.success(("The value of the key {" + key + "} was read successfully: " +
-                    (value.isEmpty() ? "deleted-value" : new String(value.get()))).getBytes(StandardCharsets.UTF_8));
+            return DatabaseCommandResult.success(value.isEmpty() ? null : value.get());
         } catch (DatabaseException e) {
             return DatabaseCommandResult.error(e);
         }

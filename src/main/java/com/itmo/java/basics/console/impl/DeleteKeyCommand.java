@@ -73,9 +73,7 @@ public class DeleteKeyCommand implements DatabaseCommand {
             Optional<byte[]> value = db.get().read(tbName, key);
             db.get().delete(tbName, key);
 
-            return DatabaseCommandResult.success(("The value of key {" + key + "} was deleted successfully. " +
-                    "Deleted value: " + (value.isEmpty() ? "null-value" : new String(value.get())))
-                    .getBytes(StandardCharsets.UTF_8));
+            return DatabaseCommandResult.success(value.isEmpty() ? null : value.get());
         } catch (DatabaseException e) {
             return DatabaseCommandResult.error(e);
         }
