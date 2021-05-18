@@ -16,12 +16,10 @@ import java.util.concurrent.CompletableFuture;
 public class DatabaseServer {
 
     private final ExecutionEnvironment env;
-    private final DatabaseServerInitializer initializer;
 
-    private DatabaseServer(ExecutionEnvironment env, DatabaseServerInitializer initializer) {
+    private DatabaseServer(ExecutionEnvironment env) {
 
         this.env = env;
-        this.initializer = initializer;
     }
 
     /**
@@ -35,7 +33,7 @@ public class DatabaseServer {
 
         initializer.perform(new InitializationContextImpl(env, null, null, null));
 
-        return new DatabaseServer(env, initializer);
+        return new DatabaseServer(env);
     }
 
     public CompletableFuture<DatabaseCommandResult> executeNextCommand(RespArray message) {

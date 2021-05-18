@@ -67,7 +67,7 @@ public class CreateDatabaseCommand implements DatabaseCommand {
             return DatabaseCommandResult.success(
                     ("Database " + dbName + " was created successfully").getBytes(StandardCharsets.UTF_8));
         } catch (DatabaseException e) {
-            return DatabaseCommandResult.error(e.getMessage());
+            return DatabaseCommandResult.error(e);
         }
     }
 }
