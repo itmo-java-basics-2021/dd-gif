@@ -5,10 +5,8 @@ import com.itmo.java.client.command.*;
 import com.itmo.java.client.connection.KvsConnection;
 import com.itmo.java.client.exception.ConnectionException;
 import com.itmo.java.client.exception.DatabaseExecutionException;
-import com.itmo.java.protocol.model.RespArray;
 import com.itmo.java.protocol.model.RespObject;
 
-import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 public class SimpleKvsClient implements KvsClient {
@@ -35,12 +33,13 @@ public class SimpleKvsClient implements KvsClient {
             KvsCommand command = new CreateDatabaseKvsCommand(databaseName);
             RespObject result = connectionSupplier.get().send(command.getCommandId(), command.serialize());
 
-
+            if (result.isError()) {
+                throw new DatabaseExecutionException(result.asString());
+            }
 
             return result.asString();
         } catch (ConnectionException e) {
-            // TODO exception text ???
-            throw new DatabaseExecutionException("asd", e.getCause());
+            throw new DatabaseExecutionException(e.getMessage(), e);
         }
     }
 
@@ -51,12 +50,13 @@ public class SimpleKvsClient implements KvsClient {
             KvsCommand command = new CreateTableKvsCommand(databaseName, tableName);
             RespObject result = connectionSupplier.get().send(command.getCommandId(), command.serialize());
 
-
+            if (result.isError()) {
+                throw new DatabaseExecutionException(result.asString());
+            }
 
             return result.asString();
         } catch (ConnectionException e) {
-            // TODO exception text ???
-            throw new DatabaseExecutionException("asd", e.getCause());
+            throw new DatabaseExecutionException(e.getMessage(), e);
         }
     }
 
@@ -67,12 +67,13 @@ public class SimpleKvsClient implements KvsClient {
             KvsCommand command = new GetKvsCommand(databaseName, tableName, key);
             RespObject result = connectionSupplier.get().send(command.getCommandId(), command.serialize());
 
-
+            if (result.isError()) {
+                throw new DatabaseExecutionException(result.asString());
+            }
 
             return result.asString();
         } catch (ConnectionException e) {
-            // TODO exception text ???
-            throw new DatabaseExecutionException("asd", e.getCause());
+            throw new DatabaseExecutionException(e.getMessage(), e);
         }
     }
 
@@ -83,12 +84,13 @@ public class SimpleKvsClient implements KvsClient {
             KvsCommand command = new SetKvsCommand(databaseName, tableName, key, value);
             RespObject result = connectionSupplier.get().send(command.getCommandId(), command.serialize());
 
-
+            if (result.isError()) {
+                throw new DatabaseExecutionException(result.asString());
+            }
 
             return result.asString();
         } catch (ConnectionException e) {
-            // TODO exception text ???
-            throw new DatabaseExecutionException("asd", e.getCause());
+            throw new DatabaseExecutionException(e.getMessage(), e);
         }
     }
 
@@ -99,12 +101,13 @@ public class SimpleKvsClient implements KvsClient {
             KvsCommand command = new DeleteKvsCommand(databaseName, tableName, key);
             RespObject result = connectionSupplier.get().send(command.getCommandId(), command.serialize());
 
-
+            if (result.isError()) {
+                throw new DatabaseExecutionException(result.asString());
+            }
 
             return result.asString();
         } catch (ConnectionException e) {
-            // TODO exception text ???
-            throw new DatabaseExecutionException("asd", e.getCause());
+            throw new DatabaseExecutionException(e.getMessage(), e);
         }
     }
 }
