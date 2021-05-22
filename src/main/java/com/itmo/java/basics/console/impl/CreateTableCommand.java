@@ -65,8 +65,7 @@ public class CreateTableCommand implements DatabaseCommand {
 
             Optional<Database> db = env.getDatabase(dbName);
             if (db.isEmpty()) {
-                return DatabaseCommandResult.error(
-                        new DatabaseException("Database Exception: database " + dbName + " is not exist"));
+                return DatabaseCommandResult.error("Database Exception: database " + dbName + " is not exist");
             }
 
             db.get().createTableIfNotExists(tbName);

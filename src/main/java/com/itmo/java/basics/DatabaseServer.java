@@ -1,9 +1,6 @@
 package com.itmo.java.basics;
 
-import com.itmo.java.basics.console.DatabaseCommand;
-import com.itmo.java.basics.console.DatabaseCommandResult;
-import com.itmo.java.basics.console.DatabaseCommands;
-import com.itmo.java.basics.console.ExecutionEnvironment;
+import com.itmo.java.basics.console.*;
 import com.itmo.java.basics.exceptions.DatabaseException;
 import com.itmo.java.basics.initialization.impl.DatabaseInitializationContextImpl;
 import com.itmo.java.basics.initialization.impl.DatabaseServerInitializer;
@@ -39,26 +36,27 @@ public class DatabaseServer {
     public CompletableFuture<DatabaseCommandResult> executeNextCommand(RespArray message) {
 
         var args = message.getObjects();
+        int commandPosition = DatabaseCommandArgPositions.COMMAND_NAME.getPositionIndex();
         DatabaseCommand command;
 
-        switch (args.get(1).asString()) {
+        switch (args.get(commandPosition).asString()) {
             case "CREATE_DATABASE":
-                command = DatabaseCommands.CREATE_DATABASE.getCommand(env, args);
+                command = DatabaseCommands.valueOf("CREATE_DATABASE").getCommand(env, args);
                 break;
             case "CREATE_TABLE":
-                command = DatabaseCommands.CREATE_TABLE.getCommand(env, args);
+                command = DatabaseCommands.valueOf("CREATE_TABLE").getCommand(env, args);
                 break;
             case "SET_KEY":
-                command = DatabaseCommands.SET_KEY.getCommand(env, args);
+                command = DatabaseCommands.valueOf("SET_KEY").getCommand(env, args);
                 break;
             case "GET_KEY":
-                command = DatabaseCommands.GET_KEY.getCommand(env, args);
+                command = DatabaseCommands.valueOf("GET_KEY").getCommand(env, args);
                 break;
             case "DELETE_KEY":
-                command = DatabaseCommands.DELETE_KEY.getCommand(env, args);
+                command = DatabaseCommands.valueOf("DELETE_KEY").getCommand(env, args);
                 break;
             default:
-                throw new IllegalStateException("Wrong command: " + args.get(1).asString());
+                throw new IllegalStateException("Wrong command: " + args.get(commandPosition).asString());
         }
 
         return executeNextCommand(command);
