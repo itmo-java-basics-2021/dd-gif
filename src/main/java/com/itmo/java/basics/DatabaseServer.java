@@ -37,27 +37,7 @@ public class DatabaseServer {
 
         var args = message.getObjects();
         int commandPosition = DatabaseCommandArgPositions.COMMAND_NAME.getPositionIndex();
-        DatabaseCommand command;
-
-        switch (args.get(commandPosition).asString()) {
-            case "CREATE_DATABASE":
-                command = DatabaseCommands.valueOf("CREATE_DATABASE").getCommand(env, args);
-                break;
-            case "CREATE_TABLE":
-                command = DatabaseCommands.valueOf("CREATE_TABLE").getCommand(env, args);
-                break;
-            case "SET_KEY":
-                command = DatabaseCommands.valueOf("SET_KEY").getCommand(env, args);
-                break;
-            case "GET_KEY":
-                command = DatabaseCommands.valueOf("GET_KEY").getCommand(env, args);
-                break;
-            case "DELETE_KEY":
-                command = DatabaseCommands.valueOf("DELETE_KEY").getCommand(env, args);
-                break;
-            default:
-                throw new IllegalStateException("Wrong command: " + args.get(commandPosition).asString());
-        }
+        DatabaseCommand command = DatabaseCommands.valueOf(args.get(commandPosition).asString()).getCommand(env, args);
 
         return executeNextCommand(command);
     }
