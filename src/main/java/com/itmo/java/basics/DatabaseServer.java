@@ -31,4 +31,9 @@ public class DatabaseServer {
         //TODO implement
         return null;
     }
+
+    public ExecutionEnvironment getEnv() {
+        //TODO implement
+        return null;
+    }
 }
