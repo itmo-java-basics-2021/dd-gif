@@ -2,6 +2,7 @@ package com.itmo.java.basics.console.impl;
 
 import com.itmo.java.basics.console.DatabaseCommandResult;
 import com.itmo.java.protocol.model.RespBulkString;
+import com.itmo.java.protocol.model.RespError;
 import com.itmo.java.protocol.model.RespObject;
 
 /**
@@ -9,14 +10,17 @@ import com.itmo.java.protocol.model.RespObject;
  */
 public class SuccessDatabaseCommandResult implements DatabaseCommandResult {
 
+    private final byte[] payload;
+
     public SuccessDatabaseCommandResult(byte[] payload) {
-        //TODO implement
+
+        this.payload = payload;
     }
 
     @Override
     public String getPayLoad() {
-        //TODO implement
-        return null;
+
+        return payload == null ? null : new String(payload);
     }
 
     @Override
@@ -29,7 +33,7 @@ public class SuccessDatabaseCommandResult implements DatabaseCommandResult {
      */
     @Override
     public RespObject serialize() {
-        //TODO implement
-        return null;
+
+        return new RespBulkString(payload);
     }
 }
