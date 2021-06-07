@@ -170,6 +170,9 @@ public class RespReader implements AutoCloseable {
                 case '!':
                     objects[i] = readCommandId();
                     break;
+                default:
+                    // TODO exception message
+                    throw new IOException("invalid object");
             }
         }
 
@@ -185,7 +188,7 @@ public class RespReader implements AutoCloseable {
     public RespCommandId readCommandId() throws IOException {
 
         if (is.available() == 0) {
-            return new RespCommandId(0);
+
         }
 
         return new RespCommandId(ByteBuffer
