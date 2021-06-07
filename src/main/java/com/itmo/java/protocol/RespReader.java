@@ -74,7 +74,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespError readError() throws IOException {
 
-        if (!hasArray()) {
+        if (is.available() == 0) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -104,7 +104,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespBulkString readBulkString() throws IOException {
 
-        if (!hasArray()) {
+        if (is.available() == 0) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -141,7 +141,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespArray readArray() throws IOException {
 
-        if (!hasArray()) {
+        if (is.available() == 0) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -185,7 +185,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespCommandId readCommandId() throws IOException {
 
-        if (!hasArray()) {
+        if (is.available() == 0) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
