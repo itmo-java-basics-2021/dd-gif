@@ -74,8 +74,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespError readError() throws IOException {
 
-        int asd = is.available();
-        if (asd == 0) {
+        if (is.available() == 0) {
             return new RespError(new byte[0]);
         }
 
@@ -104,10 +103,8 @@ public class RespReader implements AutoCloseable {
      */
     public RespBulkString readBulkString() throws IOException {
 
-        int asd = is.available();
-        if (asd == 0) {
-            // TODO exception message
-            throw new EOFException(String.valueOf(asd) + "vibrosbulkstring");
+        if (is.available() == 0) {
+            return RespBulkString.NULL_STRING;
         }
 
         byte[] b = new byte[4];
@@ -187,10 +184,8 @@ public class RespReader implements AutoCloseable {
      */
     public RespCommandId readCommandId() throws IOException {
 
-        int asd = is.available();
-        if (asd == 0) {
-            // TODO exception message
-            throw new EOFException(String.valueOf(asd) + "vibroscommandid");
+        if (is.available() == 0) {
+            return new RespCommandId(0);
         }
 
         return new RespCommandId(ByteBuffer
