@@ -46,9 +46,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespObject readObject() throws IOException {
 
-        int b = is.read();
-        is.unread(b);
-        if (b == -1) {
+        if (isEndOfFile()) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -76,9 +74,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespError readError() throws IOException {
 
-        int b = is.read();
-        is.unread(b);
-        if (b == -1) {
+        if (isEndOfFile()) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -108,9 +104,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespBulkString readBulkString() throws IOException {
 
-        int check = is.read();
-        is.unread(check);
-        if (check == -1) {
+        if (isEndOfFile()) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -147,9 +141,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespArray readArray() throws IOException {
 
-        int check = is.read();
-        is.unread(check);
-        if (check == -1) {
+        if (isEndOfFile()) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -193,9 +185,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespCommandId readCommandId() throws IOException {
 
-        int b = is.read();
-        is.unread(b);
-        if (b == -1) {
+        if (isEndOfFile()) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -209,6 +199,14 @@ public class RespReader implements AutoCloseable {
                         (byte) is.read()})
                 .getInt()
         );
+    }
+
+    private boolean isEndOfFile() throws IOException {
+
+        int b = is.read();
+        is.unread(b);
+
+        return b == -1;
     }
 
 
