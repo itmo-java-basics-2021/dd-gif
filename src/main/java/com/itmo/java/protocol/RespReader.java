@@ -163,13 +163,26 @@ public class RespReader implements AutoCloseable {
      */
     public RespCommandId readCommandId() throws IOException {
 
-        int id = ByteBuffer
-                .wrap(new byte[] {
-                        (byte) is.read(),
-                        (byte) is.read(),
-                        (byte) is.read(),
-                        (byte) is.read()})
-                .getInt();
+        byte[] b = new byte[4];
+        b[0] = (byte) is.read();
+        b[1] = (byte) is.read();
+        b[2] = (byte) is.read();
+        b[3] = (byte) is.read();
+
+        String s = new String(b);
+        int id = 0;
+        try {
+            id = Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            throw new IOException("asd");
+        }
+//        int id = ByteBuffer
+//                .wrap(new byte[] {
+//                        (byte) is.read(),
+//                        (byte) is.read(),
+//                        (byte) is.read(),
+//                        (byte) is.read()})
+//                .get;
 
         return new RespCommandId(id);
     }
