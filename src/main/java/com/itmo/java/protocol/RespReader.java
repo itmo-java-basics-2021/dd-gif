@@ -46,7 +46,9 @@ public class RespReader implements AutoCloseable {
      */
     public RespObject readObject() throws IOException {
 
-        if (is.available() == 0) {
+        int b = is.read();
+        is.unread(b);
+        if (b == -1) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
@@ -74,8 +76,11 @@ public class RespReader implements AutoCloseable {
      */
     public RespError readError() throws IOException {
 
-        if (is.available() == 0) {
-            return new RespError(new byte[0]);
+        int b = is.read();
+        is.unread(b);
+        if (b == -1) {
+            // TODO exception message
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         List<Byte> message = new ArrayList<>();
@@ -103,8 +108,11 @@ public class RespReader implements AutoCloseable {
      */
     public RespBulkString readBulkString() throws IOException {
 
-        if (is.available() == 0) {
-            return RespBulkString.NULL_STRING;
+        int check = is.read();
+        is.unread(check);
+        if (check == -1) {
+            // TODO exception message
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         byte[] b = new byte[4];
@@ -139,10 +147,11 @@ public class RespReader implements AutoCloseable {
      */
     public RespArray readArray() throws IOException {
 
-        int asd = is.available();
-        if (asd == 0) {
+        int check = is.read();
+        is.unread(check);
+        if (check == -1) {
             // TODO exception message
-            throw new EOFException(String.valueOf(asd) + "vibrosarray");
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         byte[] b = new byte[4];
@@ -184,8 +193,11 @@ public class RespReader implements AutoCloseable {
      */
     public RespCommandId readCommandId() throws IOException {
 
-        if (is.available() == 0) {
-            return new RespCommandId(0);
+        int b = is.read();
+        is.unread(b);
+        if (b == -1) {
+            // TODO exception message
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         return new RespCommandId(ByteBuffer
