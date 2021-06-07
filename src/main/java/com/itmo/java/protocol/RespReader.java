@@ -76,8 +76,7 @@ public class RespReader implements AutoCloseable {
 
         int asd = is.available();
         if (asd == 0) {
-            // TODO exception message
-            throw new EOFException(String.valueOf(asd) + "vibroserror");
+            return new RespError(new byte[0]);
         }
 
         List<Byte> message = new ArrayList<>();
