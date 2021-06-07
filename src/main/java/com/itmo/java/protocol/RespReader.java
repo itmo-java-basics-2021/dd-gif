@@ -74,9 +74,10 @@ public class RespReader implements AutoCloseable {
      */
     public RespError readError() throws IOException {
 
-        if (is.available() == 0) {
+        int asd = is.available();
+        if (asd == 0) {
             // TODO exception message
-            throw new EOFException(String.valueOf(is.available()));
+            throw new EOFException(String.valueOf(asd));
         }
 
         List<Byte> message = new ArrayList<>();
@@ -104,9 +105,10 @@ public class RespReader implements AutoCloseable {
      */
     public RespBulkString readBulkString() throws IOException {
 
-        if (is.available() == 0) {
+        int asd = is.available();
+        if (asd == 0) {
             // TODO exception message
-            throw new EOFException(String.valueOf(is.available()));
+            throw new EOFException(String.valueOf(asd));
         }
 
         byte[] b = new byte[4];
@@ -141,9 +143,10 @@ public class RespReader implements AutoCloseable {
      */
     public RespArray readArray() throws IOException {
 
-        if (is.available() == 0) {
+        int asd = is.available();
+        if (asd == 0) {
             // TODO exception message
-            throw new EOFException(String.valueOf(is.available()));
+            throw new EOFException(String.valueOf(asd));
         }
 
         byte[] b = new byte[4];
@@ -185,9 +188,10 @@ public class RespReader implements AutoCloseable {
      */
     public RespCommandId readCommandId() throws IOException {
 
-        if (is.available() == 0) {
+        int asd = is.available();
+        if (asd == 0) {
             // TODO exception message
-            throw new EOFException(String.valueOf(is.available()));
+            throw new EOFException(String.valueOf(asd));
         }
 
         return new RespCommandId(ByteBuffer
