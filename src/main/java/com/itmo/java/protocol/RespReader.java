@@ -77,7 +77,7 @@ public class RespReader implements AutoCloseable {
         int asd = is.available();
         if (asd == 0) {
             // TODO exception message
-            throw new EOFException(String.valueOf(asd));
+            throw new EOFException(String.valueOf(asd) + "vibroserror");
         }
 
         List<Byte> message = new ArrayList<>();
@@ -108,7 +108,7 @@ public class RespReader implements AutoCloseable {
         int asd = is.available();
         if (asd == 0) {
             // TODO exception message
-            throw new EOFException(String.valueOf(asd));
+            throw new EOFException(String.valueOf(asd) + "vibrosbulkstring");
         }
 
         byte[] b = new byte[4];
@@ -146,7 +146,7 @@ public class RespReader implements AutoCloseable {
         int asd = is.available();
         if (asd == 0) {
             // TODO exception message
-            throw new EOFException(String.valueOf(asd));
+            throw new EOFException(String.valueOf(asd) + "vibrosarray");
         }
 
         byte[] b = new byte[4];
@@ -191,7 +191,7 @@ public class RespReader implements AutoCloseable {
         int asd = is.available();
         if (asd == 0) {
             // TODO exception message
-            throw new EOFException(String.valueOf(asd));
+            throw new EOFException(String.valueOf(asd) + "vibroscommandid");
         }
 
         return new RespCommandId(ByteBuffer
