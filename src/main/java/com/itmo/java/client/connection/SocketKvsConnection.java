@@ -11,8 +11,11 @@ import com.itmo.java.protocol.model.RespObject;
  */
 public class SocketKvsConnection implements KvsConnection {
 
+    private final ConnectionConfig config;
+
     public SocketKvsConnection(ConnectionConfig config) {
-        //TODO implement
+
+        this.config = config;
     }
 
     /**

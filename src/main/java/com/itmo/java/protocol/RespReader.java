@@ -51,19 +51,10 @@ public class RespReader implements AutoCloseable {
             throw new EOFException(String.valueOf(is.available()));
         }
 
-        switch (is.read()) {
-            case '$':
-                return readBulkString();
-            case '-':
-                return readError();
-            case '*':
-                return readArray();
-            case '!':
-                return readCommandId();
-            default:
-                // TODO exception message
-                throw new IOException("unknown object");
-        }
+        if (is.read() == '*') {
+            return readArray();
+        }// TODO exception message
+        throw new IOException("unknown object");
     }
 
     /**
@@ -109,17 +100,7 @@ public class RespReader implements AutoCloseable {
             throw new EOFException(String.valueOf(is.available()));
         }
 
-        byte[] b = new byte[4];
-        int tmp = 3;
-        byte someByte;
-        while ((someByte = (byte) is.read()) != CR) {
-            b[tmp] = someByte;
-            tmp--;
-        }
-        int count = ByteBuffer.wrap(b).getInt();
-
-        is.read();
-
+        int count = readCount();
         byte[] data = new byte[count];
         if (count != 0) {
             for (int i = 0; i < count; i++) {
@@ -146,17 +127,7 @@ public class RespReader implements AutoCloseable {
             throw new EOFException(String.valueOf(is.available()));
         }
 
-        byte[] b = new byte[4];
-        int tmp = 3;
-        byte someByte;
-        while ((someByte = (byte) is.read()) != CR) {
-            b[tmp] = someByte;
-            tmp--;
-        }
-        int count = ByteBuffer.wrap(b).getInt();
-
-        is.read();
-
+        int count = readCount();
         RespObject[] objects = new RespObject[count];
         for (int i = 0; i < count; i++) {
             byte code = (byte) is.read();
@@ -209,6 +180,19 @@ public class RespReader implements AutoCloseable {
         return b == -1;
     }
 
+    private int readCount() throws IOException {
+
+        byte[] b = new byte[4];
+        int tmp = 3;
+        byte someByte;
+        while ((someByte = (byte) is.read()) != CR) {
+            b[tmp] = someByte;
+            tmp--;
+        }
+        is.read();
+
+        return ByteBuffer.wrap(b).getInt();
+    }
 
     @Override
     public void close() throws IOException {
