@@ -31,8 +31,10 @@ public class RespReader implements AutoCloseable {
      */
     public boolean hasArray() throws IOException {
 
-        InputStream tmp = new PushbackInputStream(is);
-        return tmp.readAllBytes().length > 0;
+        byte b = (byte) is.read();
+        is.unread(b);
+
+        return b == '*';
     }
 
     /**
@@ -59,7 +61,8 @@ public class RespReader implements AutoCloseable {
             case '!':
                 return readCommandId();
             default:
-                return null;
+                // TODO exception message
+                throw new IOException("unknown object");
         }
     }
 
