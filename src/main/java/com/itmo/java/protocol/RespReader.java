@@ -31,7 +31,8 @@ public class RespReader implements AutoCloseable {
      */
     public boolean hasArray() throws IOException {
 
-        return is.available() > 0;
+        InputStream tmp = new PushbackInputStream(is);
+        return tmp.readAllBytes().length > 0;
     }
 
     /**
