@@ -200,6 +200,7 @@ public class RespReader implements AutoCloseable {
 
     @Override
     public void close() throws IOException {
-        //TODO implement
+
+        is.close();
     }
 }
