@@ -46,7 +46,7 @@ public class RespReader implements AutoCloseable {
      */
     public RespObject readObject() throws IOException {
 
-        if (!hasArray()) {
+        if (is.available() > 0) {
             // TODO exception message
             throw new EOFException(String.valueOf(is.available()));
         }
