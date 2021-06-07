@@ -171,11 +171,7 @@ public class RespReader implements AutoCloseable {
                         (byte) is.read()})
                 .getInt();
 
-        if (id < 0) {
-            throw new IOException("wrong file");
-        } else {
-            return new RespCommandId(id);
-        }
+        return new RespCommandId(id);
     }
 
     private boolean isEndOfFile() throws IOException {
