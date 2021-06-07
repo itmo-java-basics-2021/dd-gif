@@ -6,9 +6,7 @@ import com.itmo.java.protocol.model.RespCommandId;
 import com.itmo.java.protocol.model.RespError;
 import com.itmo.java.protocol.model.RespObject;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +14,7 @@ import java.util.List;
 
 public class RespReader implements AutoCloseable {
 
-    private final InputStream is;
+    private final PushbackInputStream is;
     /**
      * Специальные символы окончания элемента
      */
@@ -25,7 +23,7 @@ public class RespReader implements AutoCloseable {
 
     public RespReader(InputStream is) {
 
-        this.is = is;
+        this.is = new PushbackInputStream(is);
     }
 
     /**
@@ -47,7 +45,7 @@ public class RespReader implements AutoCloseable {
 
         if (!hasArray()) {
             // TODO exception message
-            throw new EOFException("eof");
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         switch (is.read()) {
@@ -74,7 +72,7 @@ public class RespReader implements AutoCloseable {
 
         if (!hasArray()) {
             // TODO exception message
-            throw new EOFException("eof");
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         List<Byte> message = new ArrayList<>();
@@ -104,7 +102,7 @@ public class RespReader implements AutoCloseable {
 
         if (!hasArray()) {
             // TODO exception message
-            throw new EOFException("eof");
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         byte[] b = new byte[4];
@@ -141,7 +139,7 @@ public class RespReader implements AutoCloseable {
 
         if (!hasArray()) {
             // TODO exception message
-            throw new EOFException("eof");
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         byte[] b = new byte[4];
@@ -185,7 +183,7 @@ public class RespReader implements AutoCloseable {
 
         if (!hasArray()) {
             // TODO exception message
-            throw new EOFException("eof");
+            throw new EOFException(String.valueOf(is.available()));
         }
 
         return new RespCommandId(ByteBuffer
