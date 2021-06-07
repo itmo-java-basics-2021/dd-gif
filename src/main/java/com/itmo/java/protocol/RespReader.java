@@ -51,10 +51,19 @@ public class RespReader implements AutoCloseable {
             throw new EOFException(String.valueOf(is.available()));
         }
 
-        if (is.read() == '*') {
-            return readArray();
-        }// TODO exception message
-        throw new IOException("unknown object");
+        switch (is.read()) {
+            case '$':
+                return readBulkString();
+            case '-':
+                return readError();
+            case '*':
+                return readArray();
+            case '!':
+                return readCommandId();
+            default:
+                // TODO exception message
+                throw new IOException("unknown object");
+        }
     }
 
     /**
@@ -103,9 +112,7 @@ public class RespReader implements AutoCloseable {
         int count = readCount();
         byte[] data = new byte[count];
         if (count != 0) {
-            for (int i = 0; i < count; i++) {
-                data[i] = (byte) is.read();
-            }
+            data = is.readNBytes(count);
 
             is.read();
             is.read();
@@ -156,20 +163,15 @@ public class RespReader implements AutoCloseable {
      */
     public RespCommandId readCommandId() throws IOException {
 
-        if (isEndOfFile()) {
-            // TODO exception message
-            throw new EOFException(String.valueOf(is.available()));
-        }
-
-        return new RespCommandId(ByteBuffer
-                .wrap(
-                new byte[] {
+        int id = ByteBuffer
+                .wrap(new byte[] {
                         (byte) is.read(),
                         (byte) is.read(),
                         (byte) is.read(),
                         (byte) is.read()})
-                .getInt()
-        );
+                .getInt();
+
+        return new RespCommandId(id);
     }
 
     private boolean isEndOfFile() throws IOException {

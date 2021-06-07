@@ -3,6 +3,7 @@ package com.itmo.java.basics.resp;
 import com.itmo.java.basics.console.DatabaseCommand;
 import com.itmo.java.basics.console.ExecutionEnvironment;
 import com.itmo.java.protocol.RespReader;
+import com.itmo.java.protocol.model.RespArray;
 import com.itmo.java.protocol.model.RespObject;
 
 import java.io.IOException;
